@@ -1,5 +1,0 @@
-# make-tmux
-
-```
-$ make all
-```
