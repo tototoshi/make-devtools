@@ -24,6 +24,7 @@ ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
 PHP_VERSION := 8.0.3
+PNGPASTE_VERSION := 0.2.3
 PYTHON_VERSION := 3.9.4
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
 RUBY_VERSION := 3.0.1
@@ -54,6 +55,7 @@ ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
 PHP := $(BIN)/php
+PNGPASTE := $(BIN)/pngpaste
 PSTREE := $(BIN)/pstree
 PYTHON := $(BIN)/python3
 REATTACH_TO_USER_NAMESPACE := $(BIN)/reattach-to-user-namespace
@@ -98,6 +100,7 @@ all:\
 	$(OPENSSL) \
 	$(P11_KIT) \
 	$(PHP) \
+	$(PNGPASTE) \
 	$(PSTREE) \
 	$(PYTHON) \
 	$(REATTACH_TO_USER_NAMESPACE) \
@@ -261,6 +264,13 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 		make &&\
 		make install
 
+$(PNGPASTE):
+	curl -Ls -o pngpaste-$(PNGPASTE_VERSION).tar.gz https://github.com/jcsalterego/pngpaste/archive/refs/tags/$(PNGPASTE_VERSION).tar.gz
+	tar xf pngpaste-$(PNGPASTE_VERSION).tar.gz
+	cd pngpaste-$(PNGPASTE_VERSION) &&\
+		make &&\
+		mv pngpaste $(PNGPASTE)
+
 $(PSTREE):
 	mkdir -p pstree
 	cd pstree &&\
@@ -381,6 +391,9 @@ clean:
 
 	rm -f php-$(PHP_VERSION).tar.gz
 	rm -rf php-$(PHP_VERSION)
+
+	rm -f pngpaste-$(PNGPASTE_VERSION).tar.gz
+	rm -rf pngpaste-$(PNGPASTE_VERSION)
 
 	rm -rf pstree
 
