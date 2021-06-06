@@ -260,6 +260,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-curl \
 			--with-openssl \
 			--with-system-ciphers \
+			--with-pdo-mysql=mysqlnd \
 			--with-zlib &&\
 		make &&\
 		make install
