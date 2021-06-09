@@ -8,7 +8,8 @@ AG_VERSION := 2.2.0
 COREUTILS_VERSION := 8.32
 CURL_VERSION := 7.77.0
 EMACS_VERSION := 27.2
-GIT_VERSION := 2.23.1
+GETTEXT_VERSION := 0.21
+GIT_VERSION := 2.32.0
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
 ICONV_VERSION := 1.16
@@ -41,6 +42,7 @@ COURSIER := $(BIN)/coursier
 CURL := $(BIN)/curl
 EMACS := $(BIN)/emacs
 GIT := $(BIN)/git
+GETTEXT := $(BIN)/gettext
 GNUTLS := $(BIN)/gnutls-cli
 ICONV := $(BIN)/iconv
 LIBEVENT := $(LIB)/libevent.a
@@ -86,6 +88,7 @@ all:\
 	$(CURL) \
 	$(EMACS) \
 	$(GIT) \
+	$(GETTEXT) \
 	$(GNUTLS) \
 	$(ICONV) \
 	$(LIBEVENT) \
@@ -151,11 +154,17 @@ Emacs.app: $(LIBNETTLE) $(GNUTLS)
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-ns && make && make install
 	mv emacs-$(EMACS_VERSION)/nextstep/Emacs.app .
 
-$(GIT): $(OPENSSL)
+$(GIT): $(OPENSSL) $(ICONV) $(GETTEXT)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl && make && make install
+		 LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl --with-iconv=$(PREFIX) && make && make install
+
+$(GETTEXT): $(ICONV)
+	curl -LsO https://ftp.gnu.org/gnu/gettext/gettext-$(GETTEXT_VERSION).tar.gz &&\
+	tar xf gettext-$(GETTEXT_VERSION).tar.gz &&\
+	cd gettext-$(GETTEXT_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-libiconv-prefix=$(PREFIX) && make && make install
 
 $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 	curl -LsO https://www.gnupg.org/ftp/gcrypt/gnutls/v$(GNUTLS_VERSION_MAJOR_MINOR)/gnutls-$(GNUTLS_VERSION).tar.xz
@@ -172,7 +181,7 @@ $(ICONV):
 	curl -LsO https://ftp.gnu.org/gnu/libiconv/libiconv-$(ICONV_VERSION).tar.gz
 	tar xf libiconv-$(ICONV_VERSION).tar.gz &&\
 	cd libiconv-$(ICONV_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-static && make && make install
 
 $(LIBEVENT): $(OPENSSL)
 	curl -LsO https://github.com/libevent/libevent/releases/download/release-$(LIBEVENT_VERSION)-stable/libevent-$(LIBEVENT_VERSION)-stable.tar.gz
