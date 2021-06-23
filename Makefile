@@ -30,7 +30,7 @@ PYTHON_VERSION := 3.9.5
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
 RUBY_VERSION := 3.0.1
 SBT_VERSION := 1.5.1
-SQLITE_VERSION := 3.35.5
+SQLITE_VERSION := 3.36.0
 TIG_VERSION := 2.5.3
 TMUX_VERSION := 3.2a
 XZ_VERSION := 5.2.5
@@ -362,6 +362,9 @@ clean:
 
 	rm -f git-$(GIT_VERSION).tar.gz
 	rm -rf git-$(GIT_VERSION)
+
+	rm -f gettext-$(GETTEXT_VERSION).tar.gz
+	rm -rf gettext-$(GETTEXT_VERSION)
 
 	rm -f gnutls-$(GNUTLS_VERSION).tar.xz
 	rm -rf gnutls-$(GNUTLS_VERSION)
