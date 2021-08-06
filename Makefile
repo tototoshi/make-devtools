@@ -20,7 +20,6 @@ LIBPCRE_VERSION := 8.44
 LIBPNG_VERSION := 1.6.37
 LIBTASN1_VERSION := 4.16.0
 LIBXML_VERSION := 2.9.10
-METALS_EMACS_VERSION := 0.10.2
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
@@ -52,7 +51,6 @@ LIBPCRE := $(LIB)/libpcre.a
 LIBPNG := $(LIB)/libpng.a
 LIBTASN1 := $(LIB)/libtasn1.a
 LIBXML := $(LIB)/libxml2.a
-METALS_EMACS := $(BIN)/metals-emacs
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
@@ -98,7 +96,6 @@ all:\
 	$(LIBPNG) \
 	$(LIBTASN1) \
 	$(LIBXML) \
-	$(METALS_EMACS) \
 	$(ONIGURUMA) \
 	$(OPENSSL) \
 	$(P11_KIT) \
@@ -228,16 +225,6 @@ $(LIBXML):
 	tar xf libxml2-$(LIBXML_VERSION).tar.gz &&\
 	cd libxml2-$(LIBXML_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX)  --without-python && make && make install
-
-$(METALS_EMACS): $(COURSIER)
-	$(COURSIER) bootstrap \
-		--java-opt -Xss4m \
-		--java-opt -Xms100m \
-		--java-opt -Dmetals.client=emacs \
-		org.scalameta:metals_2.12:$(METALS_EMACS_VERSION) \
-		-r bintray:scalacenter/releases \
-		-r sonatype:snapshots \
-		-o $(METALS_EMACS) -f
 
 $(ONIGURUMA):
 	curl -LsO https://github.com/kkos/oniguruma/releases/download/v$(ONIGURUMA_VERSION)/onig-$(ONIGURUMA_VERSION).tar.gz
