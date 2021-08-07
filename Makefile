@@ -5,6 +5,9 @@ LIB := $(PREFIX)/lib
 OPT := $(PREFIX)/opt
 
 AG_VERSION := 2.2.0
+AUTOCONF_VERSION := 2.71
+AUTOMAKE_VERSION := 1.16.4
+CMAKE_VERSION := 3.21.1
 COREUTILS_VERSION := 8.32
 CURL_VERSION := 7.78.0
 EMACS_VERSION := 27.2
@@ -19,12 +22,14 @@ LIBNETTLE_VERSION := 3.7.2
 LIBPCRE_VERSION := 8.44
 LIBPNG_VERSION := 1.6.37
 LIBTASN1_VERSION := 4.16.0
+LIBTOOL_VERSION := 2.4.6
 LIBXML_VERSION := 2.9.10
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
 PHP_VERSION := 8.0.8
 PNGPASTE_VERSION := 0.2.3
+PKGCONFIG_VERSION := 0.29.2
 PYTHON_VERSION := 3.9.6
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
 RUBY_VERSION := 3.0.2
@@ -36,12 +41,16 @@ XZ_VERSION := 5.2.5
 ZLIB_VERSION := 1.2.11
 
 AG := $(BIN)/ag
+AUTOCONF := $(BIN)/autoconf
+AUTOMAKE := $(BIN)/automake
+CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
 COURSIER := $(BIN)/coursier
 CURL := $(BIN)/curl
 EMACS := $(BIN)/emacs
 GIT := $(BIN)/git
 GETTEXT := $(BIN)/gettext
+GLIBTOOL := $(BIN)/glibtool
 GNUTLS := $(BIN)/gnutls-cli
 ICONV := $(BIN)/iconv
 LIBEVENT := $(LIB)/libevent.a
@@ -50,11 +59,13 @@ LIBNETTLE := $(LIB)/libnettle.a
 LIBPCRE := $(LIB)/libpcre.a
 LIBPNG := $(LIB)/libpng.a
 LIBTASN1 := $(LIB)/libtasn1.a
+LIBTOOL := $(BIN)/libtool
 LIBXML := $(LIB)/libxml2.a
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
 PHP := $(BIN)/php
+PKGCONFIG := $(BIN)/pkg-config
 PNGPASTE := $(BIN)/pngpaste
 PSTREE := $(BIN)/pstree
 PYTHON := $(BIN)/python3
@@ -77,16 +88,27 @@ CONFIGURE_WITH_DEFAULT_PREFIX := $(CONFIGURE) --prefix=$(PREFIX)
 .PHONY:\
 	all \
 	Emacs.app \
-	clean
+	clean \
+	tools
+
+tools:\
+	$(AUTOCONF) \
+	$(AUTOMAKE) \
+	$(PKGCONFIG)
 
 all:\
+	tools \
 	$(AG) \
+	$(AUTOCONF) \
+	$(AUTOMAKE) \
+	$(CMAKE) \
 	$(COREUTILS) \
 	$(COURSIER) \
 	$(CURL) \
 	$(EMACS) \
 	$(GIT) \
 	$(GETTEXT) \
+	$(GLIBTOOL) \
 	$(GNUTLS) \
 	$(ICONV) \
 	$(LIBEVENT) \
@@ -95,6 +117,7 @@ all:\
 	$(LIBPCRE) \
 	$(LIBPNG) \
 	$(LIBTASN1) \
+	$(LIBTOOL) \
 	$(LIBXML) \
 	$(ONIGURUMA) \
 	$(OPENSSL) \
@@ -119,6 +142,24 @@ $(AG): $(LIBPCRE) $(XZ)
 		./autogen.sh &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
+$(AUTOCONF):
+	curl -LsO https://ftp.gnu.org/gnu/autoconf/autoconf-$(AUTOCONF_VERSION).tar.gz
+	tar xf autoconf-$(AUTOCONF_VERSION).tar.gz
+	cd autoconf-$(AUTOCONF_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(AUTOMAKE):
+	curl -LsO https://ftp.gnu.org/gnu/automake/automake-$(AUTOMAKE_VERSION).tar.gz
+	tar xf automake-$(AUTOMAKE_VERSION).tar.gz
+	cd automake-$(AUTOMAKE_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(CMAKE): $(GLIBTOOL)
+	curl -LsO https://github.com/Kitware/CMake/releases/download/v$(CMAKE_VERSION)/cmake-$(CMAKE_VERSION).tar.gz
+	tar xf cmake-$(CMAKE_VERSION).tar.gz
+	cd cmake-$(CMAKE_VERSION) &&\
+		./configure --prefix=$(PREFIX) && make && make install
+
 $(COREUTILS):
 	curl -LsO https://ftp.gnu.org/gnu/coreutils/coreutils-$(COREUTILS_VERSION).tar.xz
 	tar xf coreutils-$(COREUTILS_VERSION).tar.xz
@@ -133,7 +174,7 @@ $(CURL): $(OPENSSL)
 	curl -LsO https://curl.se/download/curl-$(CURL_VERSION).tar.xz
 	tar xf curl-$(CURL_VERSION).tar.xz
 	cd curl-$(CURL_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-ssl &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl=$(PREFIX) &&\
 		make &&\
 		make install
 
@@ -162,6 +203,9 @@ $(GETTEXT): $(ICONV)
 	tar xf gettext-$(GETTEXT_VERSION).tar.gz &&\
 	cd gettext-$(GETTEXT_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-libiconv-prefix=$(PREFIX) && make && make install
+
+$(GLIBTOOL): $(LIBTOOL)
+	ln -snf $(BIN)/libtool $(BIN)/glibtool
 
 $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 	curl -LsO https://www.gnupg.org/ftp/gcrypt/gnutls/v$(GNUTLS_VERSION_MAJOR_MINOR)/gnutls-$(GNUTLS_VERSION).tar.xz
@@ -206,6 +250,12 @@ $(LIBTASN1):
 	curl -LsO https://ftp.gnu.org/gnu/libtasn1/libtasn1-$(LIBTASN1_VERSION).tar.gz
 	tar xf libtasn1-$(LIBTASN1_VERSION).tar.gz
 	cd libtasn1-$(LIBTASN1_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(LIBTOOL):
+	curl -LsO https://ftp.wayne.edu/gnu/libtool/libtool-$(LIBTOOL_VERSION).tar.gz
+	tar xf libtool-$(LIBTOOL_VERSION).tar.gz
+	cd libtool-$(LIBTOOL_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(LIBPCRE):
@@ -261,6 +311,12 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 		make &&\
 		make install
 
+$(PKGCONFIG):
+	curl -LsO http://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIG_VERSION).tar.gz
+	tar xf pkg-config-$(PKGCONFIG_VERSION).tar.gz
+	cd pkg-config-$(PKGCONFIG_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-internal-glib && make && make install
+
 $(PNGPASTE):
 	curl -Ls -o pngpaste-$(PNGPASTE_VERSION).tar.gz https://github.com/jcsalterego/pngpaste/archive/refs/tags/$(PNGPASTE_VERSION).tar.gz
 	tar xf pngpaste-$(PNGPASTE_VERSION).tar.gz
@@ -300,7 +356,7 @@ $(SBT):
 	curl -LsO https://github.com/sbt/sbt/releases/download/v$(SBT_VERSION)/sbt-$(SBT_VERSION).tgz
 	tar xf sbt-$(SBT_VERSION).tgz
 	rm -rf $(OPT)/sbt-$(SBT_VERSION)
-	mv sbt $(OPT)/sbt-$(SBT_VERSION)
+	mkdir -p $(OPT) && mv sbt $(OPT)/sbt-$(SBT_VERSION)
 
 $(SQLITE):
 	curl -Ls -o sqlite-version-$(SQLITE_VERSION).tar.gz \
@@ -338,6 +394,15 @@ clean:
 	rm -f ag-$(AG_VERSION).tar.gz
 	rm -rf the_silver_searcher-$(AG_VERSION)
 
+	rm -f autoconf-$(AUTOCONF_VERSION).tar.gz
+	rm -rf autoconf-$(AUTOCONF_VERSION)
+
+	rm -f automake-$(AUTOMAKE_VERSION).tar.gz
+	rm -rf automake-$(AUTOMAKE_VERSION)
+
+	rm -f cmake-$(CMAKE_VERSION).tar.gz
+	rm -rf cmake-$(CMAKE_VERSION)
+
 	rm -f coreutils-$(COREUTILS_VERSION).tar.xz
 	rm -rf coreutils-$(COREUTILS_VERSION)
 
@@ -371,8 +436,14 @@ clean:
 	rm -f libtasn1-$(LIBTASN1_VERSION).tar.gz
 	rm -rf libtasn1-$(LIBTASN1_VERSION)
 
+	rm -f libtool-$(LIBTOOL_VERSION).tar.gz
+	rm -rf libtool-$(LIBTOOL_VERSION)
+
 	rm -f pcre-$(LIBPCRE_VERSION).zip
 	rm -rf pcre-$(LIBPCRE_VERSION)
+
+	rm -f pkg-config-$(PKGCONFIG_VERSION).tar.gz
+	rm -rf pkg-config-$(PKGCONFIG_VERSION)
 
 	rm -f libpng-$(LIBPNG_VERSION).tar.xz
 	rm -rf libpng-$(LIBPNG_VERSION)
