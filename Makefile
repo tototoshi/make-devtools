@@ -41,6 +41,7 @@ XZ_VERSION := 5.2.5
 ZLIB_VERSION := 1.2.11
 
 AG := $(BIN)/ag
+ANSIBLE := $(OPT)/ansible/bin/ansible
 AUTOCONF := $(BIN)/autoconf
 AUTOMAKE := $(BIN)/automake
 CMAKE := $(BIN)/cmake
@@ -99,6 +100,7 @@ tools:\
 all:\
 	tools \
 	$(AG) \
+	$(ANSIBLE) \
 	$(AUTOCONF) \
 	$(AUTOMAKE) \
 	$(CMAKE) \
@@ -141,6 +143,13 @@ $(AG): $(LIBPCRE) $(XZ)
 	cd the_silver_searcher-$(AG_VERSION) &&\
 		./autogen.sh &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(ANSIBLE): $(PYTHON)
+	$(PYTHON) -m venv $(OPT)/ansible
+	cd $(OPT)/ansible &&\
+		source bin/activate &&\
+		python3 -m pip install --upgrade pip &&\
+		python3 -m pip install ansible
 
 $(AUTOCONF):
 	curl -LsO https://ftp.gnu.org/gnu/autoconf/autoconf-$(AUTOCONF_VERSION).tar.gz
@@ -337,6 +346,7 @@ $(PYTHON): $(OPENSSL)
 	tar xf Python-$(PYTHON_VERSION).tar.xz
 	cd Python-$(PYTHON_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+	$(PYTHON) -m pip install --upgrade pip
 
 $(REATTACH_TO_USER_NAMESPACE): $(TMUX)
 	curl -Ls -o v${REATTACH_TO_USER_NAMESPACE_VERSION}.tar.gz \
