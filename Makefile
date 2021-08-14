@@ -40,6 +40,9 @@ TMUX_VERSION := 3.2a
 XZ_VERSION := 5.2.5
 ZLIB_VERSION := 1.2.11
 
+PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
+PHP_BIN := $(PHP_PREFIX)/bin
+
 AG := $(BIN)/ag
 ANSIBLE := $(OPT)/ansible/bin/ansible
 AUTOCONF := $(BIN)/autoconf
@@ -65,7 +68,7 @@ LIBXML := $(LIB)/libxml2.a
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
-PHP := $(BIN)/php
+PHP := $(PHP_BIN)/php
 PKGCONFIG := $(BIN)/pkg-config
 PNGPASTE := $(BIN)/pngpaste
 PSTREE := $(BIN)/pstree
@@ -82,6 +85,7 @@ ZLIB := $(LIB)/libz.a
 PKG_CONFIG_PATH := $(LIB)/pkgconfig:$(PKG_CONFIG_PATH)
 
 CONFIGURE := PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ./configure
+CONFIGURE_WITH_PHP_PREFIX := $(CONFIGURE) --prefix=$(PHP_PREFIX)
 CONFIGURE_WITH_DEFAULT_PREFIX := $(CONFIGURE) --prefix=$(PREFIX)
 
 .DEFAULT_GOAL := all
@@ -309,7 +313,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 	curl -LsO https://www.php.net/distributions/php-$(PHP_VERSION).tar.gz
 	tar xf php-$(PHP_VERSION).tar.gz
 	cd php-$(PHP_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) \
+		$(CONFIGURE_WITH_PHP_PREFIX) \
 			--enable-mbstring \
 			--with-iconv=$(PREFIX) \
 			--with-curl \
