@@ -15,6 +15,7 @@ GETTEXT_VERSION := 0.21
 GIT_VERSION := 2.32.0
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
+GRAPHVIZ_VERSION := 2.48.0
 ICONV_VERSION := 1.16
 LIBEVENT_VERSION := 2.1.12
 LIBFFI_VERSION := 3.3
@@ -56,6 +57,7 @@ GIT := $(BIN)/git
 GETTEXT := $(BIN)/gettext
 GLIBTOOL := $(BIN)/glibtool
 GNUTLS := $(BIN)/gnutls-cli
+GRAPHVIZ := $(BIN)/dot
 ICONV := $(BIN)/iconv
 LIBEVENT := $(LIB)/libevent.a
 LIBFFI := $(LIB)/libffi.a
@@ -116,6 +118,7 @@ all:\
 	$(GETTEXT) \
 	$(GLIBTOOL) \
 	$(GNUTLS) \
+	$(GRAPHVIZ) \
 	$(ICONV) \
 	$(LIBEVENT) \
 	$(LIBFFI) \
@@ -230,6 +233,12 @@ $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 			--with-included-libtasn1 &&\
 		make &&\
 		make install
+
+$(GRAPHVIZ):
+	curl -LsO https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/$(GRAPHVIZ_VERSION)/graphviz-$(GRAPHVIZ_VERSION).tar.gz
+	tar xf graphviz-$(GRAPHVIZ_VERSION).tar.gz
+	cd graphviz-$(GRAPHVIZ_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(ICONV):
 	curl -LsO https://ftp.gnu.org/gnu/libiconv/libiconv-$(ICONV_VERSION).tar.gz
@@ -434,6 +443,9 @@ clean:
 
 	rm -f gnutls-$(GNUTLS_VERSION).tar.xz
 	rm -rf gnutls-$(GNUTLS_VERSION)
+
+	rm -f graphviz-$(GRAPHVIZ_VERSION).tar.gz
+	rm -rf graphviz-$(GRAPHVIZ_VERSION)
 
 	rm -f libiconv-$(ICONV_VERSION).tar.gz
 	rm -rf libiconv-$(ICONV_VERSION)
