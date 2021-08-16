@@ -7,6 +7,7 @@ OPT := $(PREFIX)/opt
 AG_VERSION := 2.2.0
 AUTOCONF_VERSION := 2.71
 AUTOMAKE_VERSION := 1.16.4
+BISON_VERSION := 3.7.6
 CMAKE_VERSION := 3.21.1
 COREUTILS_VERSION := 8.32
 CURL_VERSION := 7.78.0
@@ -48,6 +49,7 @@ AG := $(BIN)/ag
 ANSIBLE := $(OPT)/ansible/bin/ansible
 AUTOCONF := $(BIN)/autoconf
 AUTOMAKE := $(BIN)/automake
+BISON := $(BIN)/bison
 CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
 COURSIER := $(BIN)/coursier
@@ -109,6 +111,7 @@ all:\
 	$(ANSIBLE) \
 	$(AUTOCONF) \
 	$(AUTOMAKE) \
+	$(BISON) \
 	$(CMAKE) \
 	$(COREUTILS) \
 	$(COURSIER) \
@@ -168,6 +171,12 @@ $(AUTOMAKE):
 	curl -LsO https://ftp.gnu.org/gnu/automake/automake-$(AUTOMAKE_VERSION).tar.gz
 	tar xf automake-$(AUTOMAKE_VERSION).tar.gz
 	cd automake-$(AUTOMAKE_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(BISON):
+	curl -LsO https://ftp.gnu.org/gnu/bison/bison-$(BISON_VERSION).tar.gz
+	tar xf bison-$(BISON_VERSION).tar.gz
+	cd bison-$(BISON_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(CMAKE): $(GLIBTOOL)
@@ -422,6 +431,9 @@ clean:
 
 	rm -f automake-$(AUTOMAKE_VERSION).tar.gz
 	rm -rf automake-$(AUTOMAKE_VERSION)
+
+	rm -f bison-$(BISON_VERSION).tar.gz
+	rm -rf bison-$(BISON_VERSION)
 
 	rm -f cmake-$(CMAKE_VERSION).tar.gz
 	rm -rf cmake-$(CMAKE_VERSION)
