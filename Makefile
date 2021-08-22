@@ -336,6 +336,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-iconv=$(PREFIX) \
 			--with-curl \
 			--with-openssl \
+			--with-pear \
 			--with-system-ciphers \
 			--with-pdo-mysql=mysqlnd \
 			--with-zlib &&\
