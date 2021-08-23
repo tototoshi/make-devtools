@@ -54,6 +54,7 @@ CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
 COURSIER := $(BIN)/coursier
 CURL := $(BIN)/curl
+DIFF_HIGHLIGHT := $(BIN)/diff-highlight
 EMACS := $(BIN)/emacs
 GIT := $(BIN)/git
 GETTEXT := $(BIN)/gettext
@@ -116,6 +117,7 @@ all:\
 	$(COREUTILS) \
 	$(COURSIER) \
 	$(CURL) \
+	$(DIFF_HIGHLIGHT) \
 	$(EMACS) \
 	$(GIT) \
 	$(GETTEXT) \
@@ -222,6 +224,14 @@ $(GIT): $(OPENSSL) $(ICONV) $(GETTEXT)
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
 		 LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl --with-iconv=$(PREFIX) && make && make install
+
+$(DIFF_HIGHLIGHT):
+	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
+	tar xf git-$(GIT_VERSION).tar.gz &&\
+	cd git-$(GIT_VERSION)/contrib/diff-highlight &&\
+		make &&\
+		mv diff-highlight $(DIFF_HIGHLIGHT) &&\
+		chmod +x $(DIFF_HIGHLIGHT)
 
 $(GETTEXT): $(ICONV)
 	curl -LsO https://ftp.gnu.org/gnu/gettext/gettext-$(GETTEXT_VERSION).tar.gz &&\
