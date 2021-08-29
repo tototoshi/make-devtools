@@ -44,6 +44,7 @@ ZLIB_VERSION := 1.2.11
 
 PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
+NINJA_BIN := $(OPT)/ninja/bin
 
 AG := $(BIN)/ag
 ANSIBLE := $(OPT)/ansible/bin/ansible
@@ -70,6 +71,8 @@ LIBPNG := $(LIB)/libpng.a
 LIBTASN1 := $(LIB)/libtasn1.a
 LIBTOOL := $(BIN)/libtool
 LIBXML := $(LIB)/libxml2.a
+MESON := $(OPT)/meson/bin/meson
+NINJA := $(NINJA_BIN)/ninja
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
@@ -133,6 +136,8 @@ all:\
 	$(LIBTASN1) \
 	$(LIBTOOL) \
 	$(LIBXML) \
+	$(MESON) \
+	$(NINJA) \
 	$(ONIGURUMA) \
 	$(OPENSSL) \
 	$(P11_KIT) \
@@ -316,6 +321,20 @@ $(LIBXML):
 	tar xf libxml2-$(LIBXML_VERSION).tar.gz &&\
 	cd libxml2-$(LIBXML_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX)  --without-python && make && make install
+
+$(MESON): $(PYTHON)
+	$(PYTHON) -m venv $(OPT)/meson
+	cd $(OPT)/meson &&\
+		source bin/activate &&\
+		python3 -m pip install --upgrade pip &&\
+		python3 -m pip install meson
+
+$(NINJA): $(PYTHON)
+	$(PYTHON) -m venv $(OPT)/ninja
+	cd $(OPT)/ninja &&\
+		source bin/activate &&\
+		python3 -m pip install --upgrade pip &&\
+		python3 -m pip install ninja
 
 $(ONIGURUMA):
 	curl -LsO https://github.com/kkos/oniguruma/releases/download/v$(ONIGURUMA_VERSION)/onig-$(ONIGURUMA_VERSION).tar.gz
