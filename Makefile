@@ -16,6 +16,8 @@ GETTEXT_VERSION := 0.21
 GIT_VERSION := 2.33.0
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
+GOBJECT_INTROSPECTION_VERSION := 1.69.0
+GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.69
 GRAPHVIZ_VERSION := 2.48.0
 ICONV_VERSION := 1.16
 LIBEVENT_VERSION := 2.1.12
@@ -61,6 +63,7 @@ GIT := $(BIN)/git
 GETTEXT := $(BIN)/gettext
 GLIBTOOL := $(BIN)/glibtool
 GNUTLS := $(BIN)/gnutls-cli
+GOBJECT_INTROSPECTION := $(BIN)/g-ir-scanner
 GRAPHVIZ := $(BIN)/dot
 ICONV := $(BIN)/iconv
 LIBEVENT := $(LIB)/libevent.a
@@ -126,6 +129,7 @@ all:\
 	$(GETTEXT) \
 	$(GLIBTOOL) \
 	$(GNUTLS) \
+	$(GOBJECT_INTROSPECTION) \
 	$(GRAPHVIZ) \
 	$(ICONV) \
 	$(LIBEVENT) \
@@ -257,6 +261,14 @@ $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 			--with-included-libtasn1 &&\
 		make &&\
 		make install
+
+$(GOBJECT_INTROSPECTION):
+	curl -LsO https://download-fallback.gnome.org/sources/gobject-introspection/$(GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR)/gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION).tar.xz
+	tar xf gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION).tar.xz
+	cd gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION) &&\
+		CFLAGS=-I$(INCLUDE) LDFLAGS=-L$(LIB) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PATH=$(NINJA_BIN):$(PATH) $(MESON) --prefix=$(PREFIX) --pkg-config-path=$(PKG_CONFIG_PATH) _build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
 
 $(GRAPHVIZ):
 	curl -LsO https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/$(GRAPHVIZ_VERSION)/graphviz-$(GRAPHVIZ_VERSION).tar.gz
@@ -485,6 +497,9 @@ clean:
 
 	rm -f gnutls-$(GNUTLS_VERSION).tar.xz
 	rm -rf gnutls-$(GNUTLS_VERSION)
+
+	rm -f gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION).tar.xz
+	rm -rf gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION)
 
 	rm -f graphviz-$(GRAPHVIZ_VERSION).tar.gz
 	rm -rf graphviz-$(GRAPHVIZ_VERSION)
