@@ -20,6 +20,7 @@ GOBJECT_INTROSPECTION_VERSION := 1.69.0
 GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.69
 GRAPHVIZ_VERSION := 2.48.0
 ICONV_VERSION := 1.16
+IMAGEMAGICK_VERSION := 7.1.0-4
 LIBEVENT_VERSION := 2.1.12
 LIBFFI_VERSION := 3.3
 LIBNETTLE_VERSION := 3.7.2
@@ -66,6 +67,7 @@ GNUTLS := $(BIN)/gnutls-cli
 GOBJECT_INTROSPECTION := $(BIN)/g-ir-scanner
 GRAPHVIZ := $(BIN)/dot
 ICONV := $(BIN)/iconv
+IMAGEMAGICK := $(BIN)/convert
 LIBEVENT := $(LIB)/libevent.a
 LIBFFI := $(LIB)/libffi.a
 LIBNETTLE := $(LIB)/libnettle.a
@@ -132,6 +134,7 @@ all:\
 	$(GOBJECT_INTROSPECTION) \
 	$(GRAPHVIZ) \
 	$(ICONV) \
+	$(IMAGEMAGICK) \
 	$(LIBEVENT) \
 	$(LIBFFI) \
 	$(LIBNETTLE) \
@@ -281,6 +284,12 @@ $(ICONV):
 	tar xf libiconv-$(ICONV_VERSION).tar.gz &&\
 	cd libiconv-$(ICONV_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-static && make && make install
+
+$(IMAGEMAGICK):
+	curl -LsO https://download.imagemagick.org/ImageMagick/download/ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
+	tar xf ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
+	cd ImageMagick-$(IMAGEMAGICK_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(LIBEVENT): $(OPENSSL)
 	curl -LsO https://github.com/libevent/libevent/releases/download/release-$(LIBEVENT_VERSION)-stable/libevent-$(LIBEVENT_VERSION)-stable.tar.gz
@@ -503,6 +512,9 @@ clean:
 
 	rm -f graphviz-$(GRAPHVIZ_VERSION).tar.gz
 	rm -rf graphviz-$(GRAPHVIZ_VERSION)
+
+	rm -f ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
+	rm -rf ImageMagick-$(IMAGEMAGICK_VERSION)
 
 	rm -f libiconv-$(ICONV_VERSION).tar.gz
 	rm -rf libiconv-$(ICONV_VERSION)
