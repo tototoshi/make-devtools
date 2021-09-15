@@ -19,7 +19,7 @@ GNUTLS_VERSION_MAJOR_MINOR := 3.6
 GOBJECT_INTROSPECTION_VERSION := 1.69.0
 GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.69
 GRAPHVIZ_VERSION := 2.48.0
-ICONV_VERSION := 1.16
+ICONV_VERSION := 59
 IMAGEMAGICK_VERSION := 7.1.0-4
 LIBEVENT_VERSION := 2.1.12
 LIBFFI_VERSION := 3.3
@@ -231,11 +231,11 @@ Emacs.app: $(LIBNETTLE) $(GNUTLS)
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-ns && make && make install
 	mv emacs-$(EMACS_VERSION)/nextstep/Emacs.app .
 
-$(GIT): $(OPENSSL) $(ICONV) $(GETTEXT)
+$(GIT): $(OPENSSL) $(GETTEXT)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
-		 LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl --with-iconv=$(PREFIX) && make && make install
+		 $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl && make && make install
 
 $(DIFF_HIGHLIGHT):
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
@@ -280,9 +280,11 @@ $(GRAPHVIZ):
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(ICONV):
-	curl -LsO https://ftp.gnu.org/gnu/libiconv/libiconv-$(ICONV_VERSION).tar.gz
+	# Use Apple version to support UTF-8-MAC
+	# https://github.com/conda-forge/git-feedstock/issues/50
+	curl -LsO https://opensource.apple.com/tarballs/libiconv/libiconv-$(ICONV_VERSION).tar.gz
 	tar xf libiconv-$(ICONV_VERSION).tar.gz &&\
-	cd libiconv-$(ICONV_VERSION) &&\
+	cd libiconv-$(ICONV_VERSION)/libiconv &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-static && make && make install
 
 $(IMAGEMAGICK):
