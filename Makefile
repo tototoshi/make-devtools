@@ -57,6 +57,7 @@ BISON := $(BIN)/bison
 CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
 COURSIER := $(BIN)/coursier
+CS := $(BIN)/cs
 CURL := $(BIN)/curl
 DIFF_HIGHLIGHT := $(BIN)/diff-highlight
 EMACS := $(BIN)/emacs
@@ -124,6 +125,7 @@ all:\
 	$(CMAKE) \
 	$(COREUTILS) \
 	$(COURSIER) \
+	$(CS) \
 	$(CURL) \
 	$(DIFF_HIGHLIGHT) \
 	$(EMACS) \
@@ -216,6 +218,10 @@ $(CURL): $(OPENSSL)
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl=$(PREFIX) &&\
 		make &&\
 		make install
+
+$(CS):
+	curl -fLo $(CS) https://git.io/coursier-cli-$(shell uname | tr LD ld)
+	chmod +x $(CS)
 
 $(EMACS): $(LIBNETTLE) $(GNUTLS)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags gnutls
