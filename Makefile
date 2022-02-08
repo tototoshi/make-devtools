@@ -32,13 +32,13 @@ LIBXML_VERSION := 2.9.10
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
-PHP_VERSION := 8.0.14
+PHP_VERSION := 8.0.15
 PNGPASTE_VERSION := 0.2.3
 PKGCONFIG_VERSION := 0.29.2
 PYTHON_VERSION := 3.9.6
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
 RUBY_VERSION := 3.0.2
-SBT_VERSION := 1.5.8
+SBT_VERSION := 1.6.2
 SQLITE_VERSION := 3.36.0
 TIG_VERSION := 2.5.3
 TMUX_VERSION := 3.2a
@@ -93,6 +93,7 @@ SBT := $(OPT)/sbt-$(SBT_VERSION)/bin/sbt
 SQLITE := $(BIN)/sqlite3
 TIG := $(BIN)/tig
 TMUX := $(BIN)/tmux
+XDEBUG := $(PHP_BIN)/xdebug
 XZ := $(BIN)/xz
 ZLIB := $(LIB)/libz.a
 
@@ -400,6 +401,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-zlib &&\
 		make &&\
 		make install
+	$(PHP_BIN)/pecl install xdebug
 
 $(PKGCONFIG):
 	curl -LsO http://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIG_VERSION).tar.gz
