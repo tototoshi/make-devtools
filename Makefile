@@ -29,6 +29,7 @@ LIBPNG_VERSION := 1.6.37
 LIBTASN1_VERSION := 4.16.0
 LIBTOOL_VERSION := 2.4.6
 LIBXML_VERSION := 2.9.10
+NODE_VERSION := 16.14.0
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
@@ -48,6 +49,8 @@ ZLIB_VERSION := 1.2.11
 PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
 NINJA_BIN := $(OPT)/ninja/bin
+NODE_PREFIX := $(OPT)/node-$(NODE_VERSION)
+NODE_BIN := $(NODE_PREFIX)/bin
 
 AG := $(BIN)/ag
 ANSIBLE := $(OPT)/ansible/bin/ansible
@@ -79,6 +82,7 @@ LIBTOOL := $(BIN)/libtool
 LIBXML := $(LIB)/libxml2.a
 MESON := $(OPT)/meson/bin/meson
 NINJA := $(NINJA_BIN)/ninja
+NODE := $(NODE_BIN)/node
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
 P11_KIT := $(BIN)/p11-kit
@@ -148,6 +152,7 @@ all:\
 	$(LIBXML) \
 	$(MESON) \
 	$(NINJA) \
+	$(NODE) \
 	$(ONIGURUMA) \
 	$(OPENSSL) \
 	$(P11_KIT) \
@@ -366,6 +371,11 @@ $(NINJA): $(PYTHON)
 		python3 -m pip install --upgrade pip &&\
 		python3 -m pip install ninja
 
+$(NODE):
+	curl -LsO https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-darwin-x64.tar.gz
+	tar xf node-v$(NODE_VERSION)-darwin-x64.tar.gz
+	mv node-v$(NODE_VERSION)-darwin-x64 $(NODE_PREFIX)
+
 $(ONIGURUMA):
 	curl -LsO https://github.com/kkos/oniguruma/releases/download/v$(ONIGURUMA_VERSION)/onig-$(ONIGURUMA_VERSION).tar.gz
 	tar xf onig-$(ONIGURUMA_VERSION).tar.gz
@@ -555,6 +565,9 @@ clean:
 
 	rm -f libxml2-$(LIBXML_VERSION).tar.gz
 	rm -rf libxml2-$(LIBXML_VERSION)
+
+	rm -f node-v$(NODE_VERSION)-darwin-x64.tar.gz
+	rm -rf node-v$(NODE_VERSION)-darwin-x64
 
 	rm -f onig-$(ONIGURUMA_VERSION).tar.gz
 	rm -rf onig-$(ONIGURUMA_VERSION)
