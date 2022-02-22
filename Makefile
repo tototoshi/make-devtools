@@ -14,6 +14,7 @@ CURL_VERSION := 7.78.0
 EMACS_VERSION := 27.2
 GETTEXT_VERSION := 0.21
 GIT_VERSION := 2.33.0
+GLOBAL_VERSION := 6.6.8
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
 GOBJECT_INTROSPECTION_VERSION := 1.69.0
@@ -67,6 +68,7 @@ EMACS := $(BIN)/emacs
 GIT := $(BIN)/git
 GETTEXT := $(BIN)/gettext
 GLIBTOOL := $(BIN)/glibtool
+GLOBAL := $(BIN)/global
 GNUTLS := $(BIN)/gnutls-cli
 GOBJECT_INTROSPECTION := $(BIN)/g-ir-scanner
 GRAPHVIZ := $(BIN)/dot
@@ -137,6 +139,7 @@ all:\
 	$(GIT) \
 	$(GETTEXT) \
 	$(GLIBTOOL) \
+	$(GLOBAL) \
 	$(GNUTLS) \
 	$(GOBJECT_INTROSPECTION) \
 	$(GRAPHVIZ) \
@@ -262,6 +265,12 @@ $(GETTEXT): $(ICONV)
 	tar xf gettext-$(GETTEXT_VERSION).tar.gz &&\
 	cd gettext-$(GETTEXT_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-libiconv-prefix=$(PREFIX) && make && make install
+
+$(GLOBAL):
+	curl -LsO https://ftp.gnu.org/pub/gnu/global/global-$(GLOBAL_VERSION).tar.gz &&\
+	tar xf global-$(GLOBAL_VERSION).tar.gz &&\
+	cd global-$(GLOBAL_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(GLIBTOOL): $(LIBTOOL)
 	ln -snf $(BIN)/libtool $(BIN)/glibtool
@@ -520,6 +529,9 @@ clean:
 
 	rm -f git-$(GIT_VERSION).tar.gz
 	rm -rf git-$(GIT_VERSION)
+
+	rm -f global-$(GLOBAL_VERSION).tar.gz
+	rm -rf global-$(GLOBAL_VERSION)
 
 	rm -f gettext-$(GETTEXT_VERSION).tar.gz
 	rm -rf gettext-$(GETTEXT_VERSION)
