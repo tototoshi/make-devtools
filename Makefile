@@ -411,6 +411,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 	cd php-$(PHP_VERSION) &&\
 		$(CONFIGURE_WITH_PHP_PREFIX) \
 			--enable-mbstring \
+			--enable-pcntl \
 			--with-iconv=$(PREFIX) \
 			--with-curl \
 			--with-openssl \
