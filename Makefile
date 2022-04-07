@@ -11,7 +11,7 @@ BISON_VERSION := 3.7.6
 CMAKE_VERSION := 3.21.1
 COREUTILS_VERSION := 8.32
 CURL_VERSION := 7.78.0
-EMACS_VERSION := 27.2
+EMACS_VERSION := 28.1
 GETTEXT_VERSION := 0.21
 GIT_VERSION := 2.33.0
 GLOBAL_VERSION := 6.6.8
@@ -47,6 +47,8 @@ TMUX_VERSION := 3.2a
 XZ_VERSION := 5.2.5
 ZLIB_VERSION := 1.2.11
 
+EMACS_PREFIX := $(OPT)/emacs-$(EMACS_VERSION)
+EMACS_BIN := $(EMACS_PREFIX)/bin
 PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
 NINJA_BIN := $(OPT)/ninja/bin
@@ -64,8 +66,8 @@ COURSIER := $(BIN)/coursier
 CS := $(BIN)/cs
 CURL := $(BIN)/curl
 DIFF_HIGHLIGHT := $(BIN)/diff-highlight
-EMACS := $(BIN)/emacs
 GIT := $(BIN)/git
+EMACS := $(EMACS_BIN)/emacs
 GETTEXT := $(BIN)/gettext
 GLIBTOOL := $(BIN)/glibtool
 GLOBAL := $(BIN)/global
@@ -237,13 +239,13 @@ $(EMACS): $(LIBNETTLE) $(GNUTLS)
 	curl -LsO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --without-ns --without-x && make && make install
+		$(CONFIGURE_WITH_EMACS_PREFIX) --without-ns --without-x && make && make install
 
 Emacs.app: $(LIBNETTLE) $(GNUTLS)
 	curl -LsO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-ns && make && make install
+		$(CONFIGURE_WITH_EMACS_PREFIX) --with-ns && make && make install
 	mv emacs-$(EMACS_VERSION)/nextstep/Emacs.app .
 
 $(GIT): $(OPENSSL) $(GETTEXT)
