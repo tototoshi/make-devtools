@@ -49,6 +49,8 @@ ZLIB_VERSION := 1.2.12
 
 EMACS_PREFIX := $(OPT)/emacs-$(EMACS_VERSION)
 EMACS_BIN := $(EMACS_PREFIX)/bin
+GIT_PREFIX := $(OPT)/git-$(GIT_VERSION)
+GIT_BIN := $(GIT_PREFIX)/bin
 PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
 NINJA_BIN := $(OPT)/ninja/bin
@@ -66,8 +68,8 @@ COURSIER := $(BIN)/coursier
 CS := $(BIN)/cs
 CURL := $(BIN)/curl
 DIFF_HIGHLIGHT := $(BIN)/diff-highlight
-GIT := $(BIN)/git
 EMACS := $(EMACS_BIN)/emacs
+GIT := $(GIT_BIN)/git
 GETTEXT := $(BIN)/gettext
 GLIBTOOL := $(BIN)/glibtool
 GLOBAL := $(BIN)/global
@@ -109,6 +111,7 @@ PKG_CONFIG_PATH := $(LIB)/pkgconfig:$(PKG_CONFIG_PATH)
 
 CONFIGURE := PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ./configure
 CONFIGURE_WITH_PHP_PREFIX := $(CONFIGURE) --prefix=$(PHP_PREFIX)
+CONFIGURE_WITH_EMACS_PREFIX := $(CONFIGURE) --prefix=$(EMACS_PREFIX)
 CONFIGURE_WITH_DEFAULT_PREFIX := $(CONFIGURE) --prefix=$(PREFIX)
 
 .DEFAULT_GOAL := all
@@ -252,7 +255,10 @@ $(GIT): $(OPENSSL) $(GETTEXT)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
-		LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl --with-iconv=$(PREFIX) && \
+		LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE) \
+			--prefix=$(GIT_PREFIX) \
+			--with-openssl \
+			--with-iconv=$(PREFIX) && \
 		make && \
 		make install
 
