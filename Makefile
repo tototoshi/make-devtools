@@ -13,7 +13,7 @@ COREUTILS_VERSION := 8.32
 CURL_VERSION := 7.78.0
 EMACS_VERSION := 28.1
 GETTEXT_VERSION := 0.21
-GIT_VERSION := 2.33.0
+GIT_VERSION := 2.36.1
 GLOBAL_VERSION := 6.6.8
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
@@ -21,11 +21,11 @@ GOBJECT_INTROSPECTION_VERSION := 1.69.0
 GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.69
 GRAPHVIZ_VERSION := 2.48.0
 ICONV_VERSION := 59
-IMAGEMAGICK_VERSION := 7.1.0-4
+IMAGEMAGICK_VERSION := 7.1.0-33
 LIBEVENT_VERSION := 2.1.12
 LIBFFI_VERSION := 3.3
 LIBNETTLE_VERSION := 3.7.2
-LIBPCRE_VERSION := 8.44
+LIBPCRE_VERSION := 8.45
 LIBPNG_VERSION := 1.6.37
 LIBTASN1_VERSION := 4.16.0
 LIBTOOL_VERSION := 2.4.6
@@ -45,7 +45,7 @@ SQLITE_VERSION := 3.36.0
 TIG_VERSION := 2.5.3
 TMUX_VERSION := 3.2a
 XZ_VERSION := 5.2.5
-ZLIB_VERSION := 1.2.11
+ZLIB_VERSION := 1.2.12
 
 EMACS_PREFIX := $(OPT)/emacs-$(EMACS_VERSION)
 EMACS_BIN := $(EMACS_PREFIX)/bin
@@ -252,7 +252,9 @@ $(GIT): $(OPENSSL) $(GETTEXT)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
-		 $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl && make && make install
+		LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE_WITH_DEFAULT_PREFIX) --with-openssl --with-iconv=$(PREFIX) && \
+		make && \
+		make install
 
 $(DIFF_HIGHLIGHT):
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
@@ -351,7 +353,7 @@ $(LIBTOOL):
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(LIBPCRE):
-	curl -LsO https://ftp.pcre.org/pub/pcre/pcre-$(LIBPCRE_VERSION).zip
+	curl -Ls -o pcre-$(LIBPCRE_VERSION).zip https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.zip/download
 	tar xf pcre-$(LIBPCRE_VERSION).zip
 	cd pcre-$(LIBPCRE_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
