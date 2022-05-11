@@ -8,18 +8,28 @@ AG_VERSION := 2.2.0
 AUTOCONF_VERSION := 2.71
 AUTOMAKE_VERSION := 1.16.4
 BISON_VERSION := 3.7.6
+CAIRO_VERSION := 1.17.6
+CAIRO_VERSION_MAJOR_MINOR := 1.17
 CMAKE_VERSION := 3.21.1
 COREUTILS_VERSION := 8.32
-CURL_VERSION := 7.78.0
+CURL_VERSION := 7.83.0
 EMACS_VERSION := 28.1
+FONTCONFIG_VERSION := 2.14.0
+FREETYPE_VERSION := 2.12.1
+GDK_PIXBUF_VERSION := 2.42.6
+GDK_PIXBUF_VERSION_MAJOR_MINOR := 2.42
 GETTEXT_VERSION := 0.21
 GIT_VERSION := 2.36.1
+GLIB_VERSION := 2.72.1
+GLIB_VERSION_MAJOR_MINOR := 2.72
 GLOBAL_VERSION := 6.6.8
+GNUICONV_VERSION := 1.16
 GNUTLS_VERSION := 3.6.15
 GNUTLS_VERSION_MAJOR_MINOR := 3.6
-GOBJECT_INTROSPECTION_VERSION := 1.69.0
-GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.69
+GOBJECT_INTROSPECTION_VERSION := 1.72.0
+GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR := 1.72
 GRAPHVIZ_VERSION := 2.48.0
+HARFBUZZ_VERSION := 4.2.1
 ICONV_VERSION := 59
 IMAGEMAGICK_VERSION := 7.1.0-33
 LIBEVENT_VERSION := 2.1.12
@@ -27,6 +37,8 @@ LIBFFI_VERSION := 3.3
 LIBNETTLE_VERSION := 3.7.2
 LIBPCRE_VERSION := 8.45
 LIBPNG_VERSION := 1.6.37
+LIBRSVG_VERSION := 2.52.0
+LIBRSVG_VERSION_MAJOR_MINOR := 2.52
 LIBTASN1_VERSION := 4.16.0
 LIBTOOL_VERSION := 2.4.6
 LIBXML_VERSION := 2.9.10
@@ -34,12 +46,17 @@ NODE_VERSION := 16.14.0
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
 P11_KIT_VERSION := 0.23.22
-PHP_VERSION := 8.0.15
+PANGO_VERSION := 1.50.7
+PANGO_VERSION_MAJOR_MINOR := 1.50
+PIXMAN_VERSION := 0.40.0
+PHP_VERSION := 8.0.18
+PHP_8_1_VERSION := 8.1.5
 PNGPASTE_VERSION := 0.2.3
 PKGCONFIG_VERSION := 0.29.2
 PYTHON_VERSION := 3.9.6
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
-RUBY_VERSION := 3.0.2
+RUBY_VERSION := 3.1.2
+RUBY_VERSION_MAJOR_MINOR := 3.1
 SBT_VERSION := 1.6.2
 SQLITE_VERSION := 3.36.0
 TIG_VERSION := 2.5.3
@@ -51,8 +68,15 @@ EMACS_PREFIX := $(OPT)/emacs-$(EMACS_VERSION)
 EMACS_BIN := $(EMACS_PREFIX)/bin
 GIT_PREFIX := $(OPT)/git-$(GIT_VERSION)
 GIT_BIN := $(GIT_PREFIX)/bin
+GNUICONV_PREFIX := $(OPT)/gnuiconv
+GNUICONV_BIN := $(GNUICONV_PREFIX)/bin
+ICONV_PREFIX := $(OPT)/iconv
+ICONV_BIN := $(ICONV_PREFIX)/bin
 PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
+PHP_8_1_PREFIX := $(OPT)/php-$(PHP_8_1_VERSION)
+PHP_8_1_BIN := $(PHP_8_1_PREFIX)/bin
+RUBY_PREFIX := $(OPT)/ruby-$(RUBY_VERSION)
 NINJA_BIN := $(OPT)/ninja/bin
 NODE_PREFIX := $(OPT)/node-$(NODE_VERSION)
 NODE_BIN := $(NODE_PREFIX)/bin
@@ -62,6 +86,7 @@ ANSIBLE := $(OPT)/ansible/bin/ansible
 AUTOCONF := $(BIN)/autoconf
 AUTOMAKE := $(BIN)/automake
 BISON := $(BIN)/bison
+CAIRO := $(BIN)/cairo-trace
 CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
 COURSIER := $(BIN)/coursier
@@ -69,20 +94,27 @@ CS := $(BIN)/cs
 CURL := $(BIN)/curl
 DIFF_HIGHLIGHT := $(BIN)/diff-highlight
 EMACS := $(EMACS_BIN)/emacs
+FONTCONFIG := $(BIN)/fc-list
+FREETYPE := $(LIB)/libfreetype.dylib
+GDK_PIXBUF := $(LIB)/libgdk_pixbuf-2.0.dylib
 GIT := $(GIT_BIN)/git
 GETTEXT := $(BIN)/gettext
+GLIB := $(LIB)/libglib-2.0.dylib
 GLIBTOOL := $(BIN)/glibtool
 GLOBAL := $(BIN)/global
+GNUICONV := $(GNUICONV_BIN)/iconv
 GNUTLS := $(BIN)/gnutls-cli
 GOBJECT_INTROSPECTION := $(BIN)/g-ir-scanner
 GRAPHVIZ := $(BIN)/dot
-ICONV := $(BIN)/iconv
+HARFBUZZ := $(BIN)/hb-view
+ICONV := $(ICONV_BIN)/iconv
 IMAGEMAGICK := $(BIN)/convert
 LIBEVENT := $(LIB)/libevent.a
 LIBFFI := $(LIB)/libffi.a
 LIBNETTLE := $(LIB)/libnettle.a
 LIBPCRE := $(LIB)/libpcre.a
 LIBPNG := $(LIB)/libpng.a
+LIBRSVG := $(LIB)/librsvg-2.a
 LIBTASN1 := $(LIB)/libtasn1.a
 LIBTOOL := $(BIN)/libtool
 LIBXML := $(LIB)/libxml2.a
@@ -91,14 +123,16 @@ NINJA := $(NINJA_BIN)/ninja
 NODE := $(NODE_BIN)/node
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
+PANGO := $(BIN)/pango-view
 P11_KIT := $(BIN)/p11-kit
 PHP := $(PHP_BIN)/php
+PHP_8_1 := $(PHP_8_1_BIN)/php
+PIXMAN := $(LIB)/libpixman-1.a
 PKGCONFIG := $(BIN)/pkg-config
 PNGPASTE := $(BIN)/pngpaste
-PSTREE := $(BIN)/pstree
 PYTHON := $(BIN)/python3
 REATTACH_TO_USER_NAMESPACE := $(BIN)/reattach-to-user-namespace
-RUBY := $(BIN)/ruby
+RUBY := $(RUBY_PREFIX)/bin/ruby
 SBT := $(OPT)/sbt-$(SBT_VERSION)/bin/sbt
 SQLITE := $(BIN)/sqlite3
 TIG := $(BIN)/tig
@@ -142,39 +176,24 @@ all:\
 	$(DIFF_HIGHLIGHT) \
 	$(EMACS) \
 	$(GIT) \
-	$(GETTEXT) \
 	$(GLIBTOOL) \
 	$(GLOBAL) \
-	$(GNUTLS) \
 	$(GOBJECT_INTROSPECTION) \
 	$(GRAPHVIZ) \
+	$(HARFBUZZ) \
 	$(ICONV) \
 	$(IMAGEMAGICK) \
-	$(LIBEVENT) \
-	$(LIBFFI) \
-	$(LIBNETTLE) \
-	$(LIBPCRE) \
-	$(LIBPNG) \
-	$(LIBTASN1) \
-	$(LIBTOOL) \
-	$(LIBXML) \
-	$(MESON) \
-	$(NINJA) \
 	$(NODE) \
-	$(ONIGURUMA) \
-	$(OPENSSL) \
-	$(P11_KIT) \
 	$(PHP) \
+	$(PHP_8_1) \
 	$(PNGPASTE) \
-	$(PSTREE) \
 	$(PYTHON) \
 	$(REATTACH_TO_USER_NAMESPACE) \
 	$(RUBY) \
 	$(SBT) \
 	$(SQLITE) \
 	$(TIG) \
-	$(TMUX) \
-	$(ZLIB)
+	$(TMUX)
 
 $(AG): $(LIBPCRE) $(XZ)
 	curl -Ls -o ag-$(AG_VERSION).tar.gz \
@@ -209,6 +228,12 @@ $(BISON):
 	cd bison-$(BISON_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
+$(CAIRO): $(FREETYPE) $(LIBPNG) $(PIXMAN)
+	curl -LsO https://download.gnome.org/sources/cairo/$(CAIRO_VERSION_MAJOR_MINOR)/cairo-$(CAIRO_VERSION).tar.xz
+	tar xf cairo-$(CAIRO_VERSION).tar.xz
+	cd cairo-$(CAIRO_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
 $(CMAKE): $(GLIBTOOL)
 	curl -LsO https://github.com/Kitware/CMake/releases/download/v$(CMAKE_VERSION)/cmake-$(CMAKE_VERSION).tar.gz
 	tar xf cmake-$(CMAKE_VERSION).tar.gz
@@ -237,28 +262,43 @@ $(CS):
 	curl -fLo $(CS) https://git.io/coursier-cli-$(shell uname | tr LD ld)
 	chmod +x $(CS)
 
-$(EMACS): $(LIBNETTLE) $(GNUTLS)
-	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags gnutls
-	curl -LsO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
+$(EMACS): $(LIBRSVG) $(IMAGEMAGICK) $(LIBXML) $(LIBNETTLE) $(GNUTLS)
+	curl -LO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
 		$(CONFIGURE_WITH_EMACS_PREFIX) --without-ns --without-x && make && make install
 
-Emacs.app: $(LIBNETTLE) $(GNUTLS)
+Emacs.app: $(LIBRSVG) $(IMAGEMAGICK) $(LIBNETTLE) $(GNUTLS)
 	curl -LsO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
 		$(CONFIGURE_WITH_EMACS_PREFIX) --with-ns && make && make install
 	mv emacs-$(EMACS_VERSION)/nextstep/Emacs.app .
 
-$(GIT): $(OPENSSL) $(GETTEXT)
+$(FONTCONFIG):
+	curl -LO https://www.freedesktop.org/software/fontconfig/release/fontconfig-$(FONTCONFIG_VERSION).tar.xz
+	tar xf fontconfig-$(FONTCONFIG_VERSION).tar.xz
+	cd fontconfig-$(FONTCONFIG_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(FREETYPE): $(FONTCONFIG)
+	curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.xz
+	tar xf freetype-$(FREETYPE_VERSION).tar.xz
+	cd freetype-$(FREETYPE_VERSION) &&\
+		PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+			PATH=$(NINJA_BIN):$(PATH) \
+			$(MESON) --prefix=$(PREFIX) _build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
+
+$(GIT): $(OPENSSL) $(GETTEXT) $(ICONV)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
 	tar xf git-$(GIT_VERSION).tar.gz &&\
 	cd git-$(GIT_VERSION) &&\
-		LDFLAGS=-L$(PREFIX)/lib $(CONFIGURE) \
+		LDFLAGS=-L$(ICONV_PREFIX)/lib $(CONFIGURE) \
 			--prefix=$(GIT_PREFIX) \
 			--with-openssl \
-			--with-iconv=$(PREFIX) && \
+			--with-iconv=$(ICONV_PREFIX) && \
 		make && \
 		make install
 
@@ -270,11 +310,23 @@ $(DIFF_HIGHLIGHT):
 		mv diff-highlight $(DIFF_HIGHLIGHT) &&\
 		chmod +x $(DIFF_HIGHLIGHT)
 
-$(GETTEXT): $(ICONV)
-	curl -LsO https://ftp.gnu.org/gnu/gettext/gettext-$(GETTEXT_VERSION).tar.gz &&\
-	tar xf gettext-$(GETTEXT_VERSION).tar.gz &&\
+$(GDK_PIXBUF): $(GLIB) $(GETTEXT) $(MESON) $(NINJA)
+	curl -LsO https://download.gnome.org/sources/gdk-pixbuf/$(GDK_PIXBUF_VERSION_MAJOR_MINOR)/gdk-pixbuf-$(GDK_PIXBUF_VERSION).tar.xz
+	tar xf gdk-pixbuf-$(GDK_PIXBUF_VERSION).tar.xz
+	cd gdk-pixbuf-$(GDK_PIXBUF_VERSION) &&\
+		CFLAGS="-I$(PREFIX)/include" \
+		LDFLAGS="-L$(PREFIX)/lib" \
+			PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+			PATH=$(NINJA_BIN):$(PATH) \
+			$(MESON) --prefix=$(PREFIX) -Dgtk_doc=false -Ddocs=false -Dman=false _build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
+
+$(GETTEXT): $(ICONV) $(PKGCONFIG)
+	curl -LO https://ftp.gnu.org/gnu/gettext/gettext-$(GETTEXT_VERSION).tar.gz &&\
+	tar xf gettext-$(GETTEXT_VERSION).tar.gz
 	cd gettext-$(GETTEXT_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-libiconv-prefix=$(PREFIX) && make && make install
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-libiconv-prefix=$(ICONV_PREFIX) && make && make install
 
 $(GLOBAL):
 	curl -LsO https://ftp.gnu.org/pub/gnu/global/global-$(GLOBAL_VERSION).tar.gz &&\
@@ -282,8 +334,25 @@ $(GLOBAL):
 	cd global-$(GLOBAL_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
+$(GLIB): $(PKGCONFIG)
+	curl -LO https://download.gnome.org/sources/glib/$(GLIB_VERSION_MAJOR_MINOR)/glib-$(GLIB_VERSION).tar.xz
+	tar xf glib-$(GLIB_VERSION).tar.xz
+	cd glib-$(GLIB_VERSION) &&\
+		CFLAGS="-I$(PREFIX)/include" \
+		LDFLAGS="-L$(PREFIX)/lib" \
+		PATH=$(NINJA_BIN):$(PATH) \
+			$(MESON) --prefix=$(PREFIX) _build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
+
 $(GLIBTOOL): $(LIBTOOL)
 	ln -snf $(BIN)/libtool $(BIN)/glibtool
+
+$(GNUICONV):
+	curl -LsO https://ftp.gnu.org/pub/gnu/libiconv/libiconv-$(GNUICONV_VERSION).tar.gz
+	tar xf libiconv-$(GNUICONV_VERSION).tar.gz
+	cd libiconv-$(GNUICONV_VERSION) &&\
+		$(CONFIGURE) --prefix=$(GNUICONV_PREFIX) --enable-static && make && make install
 
 $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 	curl -LsO https://www.gnupg.org/ftp/gcrypt/gnutls/v$(GNUTLS_VERSION_MAJOR_MINOR)/gnutls-$(GNUTLS_VERSION).tar.xz
@@ -296,11 +365,16 @@ $(GNUTLS): $(LIBNETTLE) $(P11_KIT)
 		make &&\
 		make install
 
-$(GOBJECT_INTROSPECTION):
+$(GOBJECT_INTROSPECTION):  $(MESON) $(NINJA) $(GNUICONV) $(LIBPCRE)
 	curl -LsO https://download-fallback.gnome.org/sources/gobject-introspection/$(GOBJECT_INTROSPECTION_VERSION_MAJOR_MINOR)/gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION).tar.xz
 	tar xf gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION).tar.xz
 	cd gobject-introspection-$(GOBJECT_INTROSPECTION_VERSION) &&\
-		CFLAGS=-I$(INCLUDE) LDFLAGS=-L$(LIB) PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PATH=$(NINJA_BIN):$(PATH) $(MESON) --prefix=$(PREFIX) --pkg-config-path=$(PKG_CONFIG_PATH) _build &&\
+		CFLAGS=-I$(GNUICONV_PREFIX)/include \
+			LDFLAGS=-L$(GNUICONV_PREFIX)/lib \
+			PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+			PATH=$(NINJA_BIN):$(PATH) \
+			$(MESON) \
+			--prefix=$(PREFIX) _build &&\
 		$(NINJA) -C _build &&\
 		$(NINJA) -C _build install
 
@@ -310,13 +384,19 @@ $(GRAPHVIZ):
 	cd graphviz-$(GRAPHVIZ_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
+$(HARFBUZZ): $(FREETYPE)
+	curl -LsO https://github.com/harfbuzz/harfbuzz/releases/download/$(HARFBUZZ_VERSION)/harfbuzz-$(HARFBUZZ_VERSION).tar.xz
+	tar xf harfbuzz-$(HARFBUZZ_VERSION).tar.xz
+	cd harfbuzz-$(HARFBUZZ_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-coretext=yes && make && make install
+
 $(ICONV):
 	# Use Apple version to support UTF-8-MAC
 	# https://github.com/conda-forge/git-feedstock/issues/50
 	curl -LsO https://opensource.apple.com/tarballs/libiconv/libiconv-$(ICONV_VERSION).tar.gz
 	tar xf libiconv-$(ICONV_VERSION).tar.gz &&\
 	cd libiconv-$(ICONV_VERSION)/libiconv &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-static && make && make install
+		$(CONFIGURE) --prefix=$(ICONV_PREFIX) --enable-static && make && make install
 
 $(IMAGEMAGICK):
 	curl -LsO https://download.imagemagick.org/ImageMagick/download/ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
@@ -343,6 +423,14 @@ $(LIBNETTLE):
 	tar xf nettle-$(LIBNETTLE_VERSION).tar.gz
 	cd nettle-$(LIBNETTLE_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-mini-gmp &&\
+		make &&\
+		make install
+
+$(LIBRSVG): $(PANGO) $(GDK_PIXBUF)
+	curl -LsO https://download.gnome.org/sources/librsvg/$(LIBRSVG_VERSION_MAJOR_MINOR)/librsvg-$(LIBRSVG_VERSION).tar.xz
+	tar xf librsvg-$(LIBRSVG_VERSION).tar.xz
+	cd librsvg-$(LIBRSVG_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) &&\
 		make &&\
 		make install
 
@@ -409,6 +497,19 @@ $(OPENSSL):
 		make &&\
 		make install
 
+$(PANGO): $(HARFBUZZ) $(CAIRO) $(GOBJECT_INTROSPECTION) $(MESON) $(NINJA)
+	curl -LsO https://download.gnome.org/sources/pango/$(PANGO_VERSION_MAJOR_MINOR)/pango-$(PANGO_VERSION).tar.xz
+	tar xf pango-$(PANGO_VERSION).tar.xz
+	cd pango-$(PANGO_VERSION) &&\
+		LDFLAGS=-L$(PREFIX)/lib \
+		PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PATH=$(NINJA_BIN):$(PATH) $(MESON) \
+			--prefix=$(PREFIX) \
+			-Dcpp_std=c++11 \
+			-Dc_std=c11 \
+			_build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
+
 $(P11_KIT): $(LIBTASN1) $(LIBFFI)
 	curl -LsO https://github.com/p11-glue/p11-kit/releases/download/$(P11_KIT_VERSION)/p11-kit-$(P11_KIT_VERSION).tar.xz
 	tar xf p11-kit-$(P11_KIT_VERSION).tar.xz
@@ -422,7 +523,7 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 		$(CONFIGURE_WITH_PHP_PREFIX) \
 			--enable-mbstring \
 			--enable-pcntl \
-			--with-iconv=$(PREFIX) \
+			--with-iconv=$(ICONV_PREFIX) \
 			--with-curl \
 			--with-openssl \
 			--with-pear \
@@ -431,7 +532,30 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-zlib &&\
 		make &&\
 		make install
-	$(PHP_BIN)/pecl install xdebug
+
+$(PHP_8_1): $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
+	curl -LsO https://www.php.net/distributions/php-$(PHP_8_1_VERSION).tar.gz
+	tar xf php-$(PHP_8_1_VERSION).tar.gz
+	cd php-$(PHP_8_1_VERSION) &&\
+		$(CONFIGURE) \
+			--prefix=$(PHP_8_1_PREFIX) \
+			--enable-mbstring \
+			--enable-pcntl \
+			--with-iconv=$(ICONV_PREFIX) \
+			--with-curl \
+			--with-openssl \
+			--with-pear \
+			--with-system-ciphers \
+			--with-pdo-mysql=mysqlnd \
+			--with-zlib &&\
+		make &&\
+		make install
+
+$(PIXMAN):
+	curl -LsO https://www.cairographics.org/releases/pixman-$(PIXMAN_VERSION).tar.gz
+	tar xf pixman-$(PIXMAN_VERSION).tar.gz
+	cd pixman-$(PIXMAN_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(PKGCONFIG):
 	curl -LsO http://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIG_VERSION).tar.gz
@@ -445,14 +569,6 @@ $(PNGPASTE):
 	cd pngpaste-$(PNGPASTE_VERSION) &&\
 		make &&\
 		mv pngpaste $(PNGPASTE)
-
-$(PSTREE):
-	mkdir -p pstree
-	cd pstree &&\
-		curl -LsO http://www.thp.uni-duisburg.de/pstree/pstree.tar.gz &&\
-		tar xf pstree.tar.gz &&\
-		$(CC) -O -o pstree pstree.c &&\
-		mv pstree $(PSTREE)
 
 $(PYTHON): $(OPENSSL)
 	curl -LsO https://www.python.org/ftp/python/$(PYTHON_VERSION)/Python-$(PYTHON_VERSION).tar.xz
@@ -470,10 +586,10 @@ $(REATTACH_TO_USER_NAMESPACE): $(TMUX)
 		mv -f reattach-to-user-namespace $(PREFIX)/bin
 
 $(RUBY): $(OPENSSL)
-	curl -LsO https://ftp.ruby-lang.org/pub/ruby/3.0/ruby-$(RUBY_VERSION).tar.xz
+	curl -LsO https://ftp.ruby-lang.org/pub/ruby/$(RUBY_VERSION_MAJOR_MINOR)/ruby-$(RUBY_VERSION).tar.xz
 	tar xf ruby-$(RUBY_VERSION).tar.xz
 	cd ruby-$(RUBY_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+		$(CONFIGURE) --prefix=$(RUBY_PREFIX) && make && make install
 
 $(SBT):
 	curl -LsO https://github.com/sbt/sbt/releases/download/v$(SBT_VERSION)/sbt-$(SBT_VERSION).tgz
@@ -526,6 +642,9 @@ clean:
 	rm -f bison-$(BISON_VERSION).tar.gz
 	rm -rf bison-$(BISON_VERSION)
 
+	rm -f cairo-$(CAIRO_VERSION).tar.xz
+	rm -rf cairo-$(CAIRO_VERSION)
+
 	rm -f cmake-$(CMAKE_VERSION).tar.gz
 	rm -rf cmake-$(CMAKE_VERSION)
 
@@ -555,6 +674,9 @@ clean:
 
 	rm -f graphviz-$(GRAPHVIZ_VERSION).tar.gz
 	rm -rf graphviz-$(GRAPHVIZ_VERSION)
+
+	rm -f harfbuzz-$(HARFBUZZ_VERSION).tar.xz
+	rm -rf harfbuzz-$(HARFBUZZ_VERSION)
 
 	rm -f ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
 	rm -rf ImageMagick-$(IMAGEMAGICK_VERSION)
@@ -601,13 +723,17 @@ clean:
 	rm -f p11-kit-$(P11_KIT_VERSION).tar.xz
 	rm -rf p11-kit-$(P11_KIT_VERSION)
 
+	rm -f pango-$(PANGO_VERSION).tar.xz
+	rm -rf pango-$(PANGO_VERSION)
+
 	rm -f php-$(PHP_VERSION).tar.gz
 	rm -rf php-$(PHP_VERSION)
 
+	rm -f php-$(PHP_8_1_VERSION).tar.gz
+	rm -rf php-$(PHP_8_1_VERSION)
+
 	rm -f pngpaste-$(PNGPASTE_VERSION).tar.gz
 	rm -rf pngpaste-$(PNGPASTE_VERSION)
-
-	rm -rf pstree
 
 	rm -f Python-$(PYTHON_VERSION).tar.xz
 	rm -rf Python-$(PYTHON_VERSION)
