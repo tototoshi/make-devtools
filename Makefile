@@ -1,5 +1,7 @@
 PREFIX := $(HOME)/.pkgs
 
+PACKAGE_INFO := $(PREFIX)/package-info
+
 BIN := $(PREFIX)/bin
 LIB := $(PREFIX)/lib
 OPT := $(PREFIX)/opt
@@ -104,6 +106,7 @@ EMACS := $(EMACS_BIN)/emacs
 FRIBIDI := $(LIB)/libfribidi.dylib
 FONTCONFIG := $(BIN)/fc-list
 FREETYPE := $(LIB)/libfreetype.dylib
+FREETYPE_WITH_HARFBUZZ := $(PACKAGE_INFO)/freetype_with_harfbuzz
 GDK_PIXBUF := $(LIB)/libgdk_pixbuf-2.0.dylib
 GIT := $(GIT_BIN)/git
 GETTEXT := $(BIN)/gettext
@@ -165,10 +168,14 @@ PIP_INSTALL := $(PYTHON) -m pip install --upgrade pip && $(PYTHON) -m pip instal
 .DEFAULT_GOAL := all
 
 .PHONY:\
+	$(PACKAGE_INFO) \
 	all \
 	Emacs.app \
 	clean \
 	tools
+
+$(PACKAGE_INFO):
+	mkdir -p $(PACKAGE_INFO)
 
 tools:\
 	$(AUTOCONF) \
@@ -315,6 +322,18 @@ $(FREETYPE): $(FONTCONFIG) $(NINJA) $(MESON)
 			$(MESON) --prefix=$(PREFIX) _build &&\
 		$(NINJA) -C _build &&\
 		$(NINJA) -C _build install
+
+$(FREETYPE_WITH_HARFBUZZ): $(FREETYPE) $(HARFBUZZ) $(PACKAGE_INFO)
+	curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.xz
+	tar xf freetype-$(FREETYPE_VERSION).tar.xz
+	cd freetype-$(FREETYPE_VERSION) &&\
+		rm -rf _build &&\
+		PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+			PATH=$(NINJA_BIN):$(PATH) \
+			$(MESON) --prefix=$(PREFIX) _build &&\
+		$(NINJA) -C _build &&\
+		$(NINJA) -C _build install
+	touch $(FREETYPE_WITH_HARFBUZZ)
 
 $(FRIBIDI):
 	curl -LO https://github.com/fribidi/fribidi/releases/download/v$(FRIBIDI_VERSION)/fribidi-$(FRIBIDI_VERSION).tar.xz
@@ -535,10 +554,11 @@ $(OPENSSL):
 		make &&\
 		make install
 
-$(PANGO): $(HARFBUZZ) $(FRIBIDI) $(CAIRO) $(GOBJECT_INTROSPECTION) $(MESON) $(NINJA)
+$(PANGO): $(FREETYPE_WITH_HARFBUZZ) $(FRIBIDI) $(CAIRO) $(GOBJECT_INTROSPECTION) $(MESON) $(NINJA)
 	curl -LsO https://download.gnome.org/sources/pango/$(PANGO_VERSION_MAJOR_MINOR)/pango-$(PANGO_VERSION).tar.xz
 	tar xf pango-$(PANGO_VERSION).tar.xz
 	cd pango-$(PANGO_VERSION) &&\
+		rm -rf _build &&\
 		LDFLAGS=-L$(PREFIX)/lib \
 		PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) PATH=$(NINJA_BIN):$(PATH) $(MESON) \
 			--prefix=$(PREFIX) \
