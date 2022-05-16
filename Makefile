@@ -16,6 +16,7 @@ CURL_VERSION := 7.83.0
 EMACS_VERSION := 28.1
 FONTCONFIG_VERSION := 2.14.0
 FREETYPE_VERSION := 2.12.1
+FRIBIDI_VERSION := 1.0.11
 GDK_PIXBUF_VERSION := 2.42.6
 GDK_PIXBUF_VERSION_MAJOR_MINOR := 2.42
 GETTEXT_VERSION := 0.21
@@ -32,6 +33,7 @@ GRAPHVIZ_VERSION := 2.48.0
 HARFBUZZ_VERSION := 4.2.1
 ICONV_VERSION := 59
 IMAGEMAGICK_VERSION := 7.1.0-33
+JANSSON_VERSION := 2.14
 LIBEVENT_VERSION := 2.1.12
 LIBFFI_VERSION := 3.3
 LIBNETTLE_VERSION := 3.7.2
@@ -42,6 +44,8 @@ LIBRSVG_VERSION_MAJOR_MINOR := 2.52
 LIBTASN1_VERSION := 4.16.0
 LIBTOOL_VERSION := 2.4.6
 LIBXML_VERSION := 2.9.10
+LIBZIP_VERSION := 1.8.0
+MAVEN_VERSION := 3.8.5
 NODE_VERSION := 16.14.0
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
@@ -50,10 +54,10 @@ PANGO_VERSION := 1.50.7
 PANGO_VERSION_MAJOR_MINOR := 1.50
 PIXMAN_VERSION := 0.40.0
 PHP_VERSION := 8.0.18
-PHP_8_1_VERSION := 8.1.5
+PHP_8_1_VERSION := 8.1.6
 PNGPASTE_VERSION := 0.2.3
 PKGCONFIG_VERSION := 0.29.2
-PYTHON_VERSION := 3.9.6
+PYTHON_VERSION := 3.10.4
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
 RUBY_VERSION := 3.1.2
 RUBY_VERSION_MAJOR_MINOR := 3.1
@@ -76,16 +80,19 @@ PHP_PREFIX := $(OPT)/php-$(PHP_VERSION)
 PHP_BIN := $(PHP_PREFIX)/bin
 PHP_8_1_PREFIX := $(OPT)/php-$(PHP_8_1_VERSION)
 PHP_8_1_BIN := $(PHP_8_1_PREFIX)/bin
+PYTHON_PREFIX := $(OPT)/python-$(PYTHON_VERSION)
 RUBY_PREFIX := $(OPT)/ruby-$(RUBY_VERSION)
+MAVEN_PREFIX := $(OPT)/maven-$(MAVEN_VERSION)
 NINJA_BIN := $(OPT)/ninja/bin
 NODE_PREFIX := $(OPT)/node-$(NODE_VERSION)
 NODE_BIN := $(NODE_PREFIX)/bin
 
 AG := $(BIN)/ag
-ANSIBLE := $(OPT)/ansible/bin/ansible
+ANSIBLE := $(PYTHON_PREFIX)/bin/ansible
 AUTOCONF := $(BIN)/autoconf
 AUTOMAKE := $(BIN)/automake
 BISON := $(BIN)/bison
+CACERT_PEM := $(PREFIX)/ssl/cacert.pem
 CAIRO := $(BIN)/cairo-trace
 CMAKE := $(BIN)/cmake
 COREUTILS := $(BIN)/cat
@@ -94,6 +101,7 @@ CS := $(BIN)/cs
 CURL := $(BIN)/curl
 DIFF_HIGHLIGHT := $(BIN)/diff-highlight
 EMACS := $(EMACS_BIN)/emacs
+FRIBIDI := $(LIB)/libfribidi.dylib
 FONTCONFIG := $(BIN)/fc-list
 FREETYPE := $(LIB)/libfreetype.dylib
 GDK_PIXBUF := $(LIB)/libgdk_pixbuf-2.0.dylib
@@ -104,11 +112,12 @@ GLIBTOOL := $(BIN)/glibtool
 GLOBAL := $(BIN)/global
 GNUICONV := $(GNUICONV_BIN)/iconv
 GNUTLS := $(BIN)/gnutls-cli
-GOBJECT_INTROSPECTION := $(BIN)/g-ir-scanner
+GOBJECT_INTROSPECTION := $(BIN)/g-ir-inspect
 GRAPHVIZ := $(BIN)/dot
 HARFBUZZ := $(BIN)/hb-view
 ICONV := $(ICONV_BIN)/iconv
 IMAGEMAGICK := $(BIN)/convert
+JANSSON := $(LIB)/libjansson.a
 LIBEVENT := $(LIB)/libevent.a
 LIBFFI := $(LIB)/libffi.a
 LIBNETTLE := $(LIB)/libnettle.a
@@ -118,8 +127,10 @@ LIBRSVG := $(LIB)/librsvg-2.a
 LIBTASN1 := $(LIB)/libtasn1.a
 LIBTOOL := $(BIN)/libtool
 LIBXML := $(LIB)/libxml2.a
-MESON := $(OPT)/meson/bin/meson
-NINJA := $(NINJA_BIN)/ninja
+LIBZIP := $(LIB)/libzip.dylib
+MAVEN := $(MAVEN_PREFIX)/bin/mvn
+MESON := $(PYTHON_PREFIX)/bin/meson
+NINJA := $(PYTHON_PREFIX)/bin/ninja
 NODE := $(NODE_BIN)/node
 ONIGURUMA := $(LIB)/libonig.a
 OPENSSL := $(BIN)/openssl
@@ -130,7 +141,8 @@ PHP_8_1 := $(PHP_8_1_BIN)/php
 PIXMAN := $(LIB)/libpixman-1.a
 PKGCONFIG := $(BIN)/pkg-config
 PNGPASTE := $(BIN)/pngpaste
-PYTHON := $(BIN)/python3
+PYTHON := $(PYTHON_PREFIX)/bin/python3
+PIP := $(PYTHON_PREFIX)/bin/pip3
 REATTACH_TO_USER_NAMESPACE := $(BIN)/reattach-to-user-namespace
 RUBY := $(RUBY_PREFIX)/bin/ruby
 SBT := $(OPT)/sbt-$(SBT_VERSION)/bin/sbt
@@ -147,6 +159,8 @@ CONFIGURE := PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) ./configure
 CONFIGURE_WITH_PHP_PREFIX := $(CONFIGURE) --prefix=$(PHP_PREFIX)
 CONFIGURE_WITH_EMACS_PREFIX := $(CONFIGURE) --prefix=$(EMACS_PREFIX)
 CONFIGURE_WITH_DEFAULT_PREFIX := $(CONFIGURE) --prefix=$(PREFIX)
+
+PIP_INSTALL := $(PYTHON) -m pip install --upgrade pip && $(PYTHON) -m pip install --upgrade --force-reinstall
 
 .DEFAULT_GOAL := all
 
@@ -168,6 +182,7 @@ all:\
 	$(AUTOCONF) \
 	$(AUTOMAKE) \
 	$(BISON) \
+	$(CACERT_PEM) \
 	$(CMAKE) \
 	$(COREUTILS) \
 	$(COURSIER) \
@@ -183,10 +198,12 @@ all:\
 	$(HARFBUZZ) \
 	$(ICONV) \
 	$(IMAGEMAGICK) \
+	$(MAVEN) \
 	$(NODE) \
 	$(PHP) \
 	$(PHP_8_1) \
 	$(PNGPASTE) \
+	$(PYLSP) \
 	$(PYTHON) \
 	$(REATTACH_TO_USER_NAMESPACE) \
 	$(RUBY) \
@@ -204,11 +221,7 @@ $(AG): $(LIBPCRE) $(XZ)
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(ANSIBLE): $(PYTHON)
-	$(PYTHON) -m venv $(OPT)/ansible
-	cd $(OPT)/ansible &&\
-		source bin/activate &&\
-		python3 -m pip install --upgrade pip &&\
-		python3 -m pip install ansible
+	$(PIP_INSTALL) ansible
 
 $(AUTOCONF):
 	curl -LsO https://ftp.gnu.org/gnu/autoconf/autoconf-$(AUTOCONF_VERSION).tar.gz
@@ -227,6 +240,12 @@ $(BISON):
 	tar xf bison-$(BISON_VERSION).tar.gz
 	cd bison-$(BISON_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+$(CACERT_PEM): $(CURL)
+	cd $(PREFIX)/ssl &&\
+	$(CURL) -v --etag-compare etag.txt \
+		--etag-save etag.txt \
+		--remote-name https://curl.se/ca/cacert.pem
 
 $(CAIRO): $(FREETYPE) $(LIBPNG) $(PIXMAN)
 	curl -LsO https://download.gnome.org/sources/cairo/$(CAIRO_VERSION_MAJOR_MINOR)/cairo-$(CAIRO_VERSION).tar.xz
@@ -262,17 +281,23 @@ $(CS):
 	curl -fLo $(CS) https://git.io/coursier-cli-$(shell uname | tr LD ld)
 	chmod +x $(CS)
 
-$(EMACS): $(LIBRSVG) $(IMAGEMAGICK) $(LIBXML) $(LIBNETTLE) $(GNUTLS)
+$(EMACS): $(JANSSON) $(LIBRSVG) $(IMAGEMAGICK) $(LIBXML) $(LIBNETTLE) $(GNUTLS)
 	curl -LO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
 		$(CONFIGURE_WITH_EMACS_PREFIX) --without-ns --without-x && make && make install
 
-Emacs.app: $(LIBRSVG) $(IMAGEMAGICK) $(LIBNETTLE) $(GNUTLS)
-	curl -LsO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
+$(JANSSON):
+	curl -LO https://github.com/akheron/jansson/releases/download/v$(JANSSON_VERSION)/jansson-$(JANSSON_VERSION).tar.gz
+	tar xf jansson-$(JANSSON_VERSION).tar.gz
+	cd jansson-$(JANSSON_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+
+Emacs.app: $(JANSSON) $(LIBRSVG) $(IMAGEMAGICK) $(LIBXML) $(LIBNETTLE) $(GNUTLS)
+	curl -LO https://ftp.gnu.org/gnu/emacs/emacs-$(EMACS_VERSION).tar.xz
 	tar xf emacs-$(EMACS_VERSION).tar.xz
 	cd emacs-$(EMACS_VERSION) &&\
-		$(CONFIGURE_WITH_EMACS_PREFIX) --with-ns && make && make install
+		CFLAGS="-O2" $(CONFIGURE_WITH_EMACS_PREFIX) --with-ns --with-json && make && make install
 	mv emacs-$(EMACS_VERSION)/nextstep/Emacs.app .
 
 $(FONTCONFIG):
@@ -281,7 +306,7 @@ $(FONTCONFIG):
 	cd fontconfig-$(FONTCONFIG_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
-$(FREETYPE): $(FONTCONFIG)
+$(FREETYPE): $(FONTCONFIG) $(NINJA) $(MESON)
 	curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.xz
 	tar xf freetype-$(FREETYPE_VERSION).tar.xz
 	cd freetype-$(FREETYPE_VERSION) &&\
@@ -290,6 +315,12 @@ $(FREETYPE): $(FONTCONFIG)
 			$(MESON) --prefix=$(PREFIX) _build &&\
 		$(NINJA) -C _build &&\
 		$(NINJA) -C _build install
+
+$(FRIBIDI):
+	curl -LO https://github.com/fribidi/fribidi/releases/download/v$(FRIBIDI_VERSION)/fribidi-$(FRIBIDI_VERSION).tar.xz
+	tar xf fribidi-$(FRIBIDI_VERSION).tar.xz
+	cd fribidi-$(FRIBIDI_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
 $(GIT): $(OPENSSL) $(GETTEXT) $(ICONV)
 	curl -LsO https://www.kernel.org/pub/software/scm/git/git-$(GIT_VERSION).tar.gz &&\
@@ -334,7 +365,7 @@ $(GLOBAL):
 	cd global-$(GLOBAL_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
-$(GLIB): $(PKGCONFIG)
+$(GLIB): $(PKGCONFIG) $(NINJA) $(MESON)
 	curl -LO https://download.gnome.org/sources/glib/$(GLIB_VERSION_MAJOR_MINOR)/glib-$(GLIB_VERSION).tar.xz
 	tar xf glib-$(GLIB_VERSION).tar.xz
 	cd glib-$(GLIB_VERSION) &&\
@@ -374,7 +405,7 @@ $(GOBJECT_INTROSPECTION):  $(MESON) $(NINJA) $(GNUICONV) $(LIBPCRE)
 			PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 			PATH=$(NINJA_BIN):$(PATH) \
 			$(MESON) \
-			--prefix=$(PREFIX) _build &&\
+			--prefix=$(PREFIX) -Dpython=$(PYTHON) _build &&\
 		$(NINJA) -C _build &&\
 		$(NINJA) -C _build install
 
@@ -462,21 +493,28 @@ $(LIBXML):
 	curl -LsO http://xmlsoft.org/download/libxml2-$(LIBXML_VERSION).tar.gz &&\
 	tar xf libxml2-$(LIBXML_VERSION).tar.gz &&\
 	cd libxml2-$(LIBXML_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX)  --without-python && make && make install
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --without-python && make && make install
+
+$(LIBZIP):
+	curl -LO https://libzip.org/download/libzip-$(LIBZIP_VERSION).tar.gz
+	tar xf libzip-$(LIBZIP_VERSION).tar.gz
+	cd libzip-$(LIBZIP_VERSION) &&\
+		mkdir -p build &&\
+		cd build &&\
+			$(CMAKE) -DCMAKE_INSTALL_PREFIX=$(PREFIX) .. && make && make install
+
+$(MAVEN):
+	curl -LO https://dlcdn.apache.org/maven/maven-3/$(MAVEN_VERSION)/binaries/apache-maven-$(MAVEN_VERSION)-bin.tar.gz
+	tar xf apache-maven-$(MAVEN_VERSION)-bin.tar.gz
+	if [ ! -d $(MAVEN_PREFIX) ]; then \
+		mv apache-maven-$(MAVEN_VERSION) $(MAVEN_PREFIX); \
+	fi
 
 $(MESON): $(PYTHON)
-	$(PYTHON) -m venv $(OPT)/meson
-	cd $(OPT)/meson &&\
-		source bin/activate &&\
-		python3 -m pip install --upgrade pip &&\
-		python3 -m pip install meson
+	$(PIP_INSTALL) meson
 
 $(NINJA): $(PYTHON)
-	$(PYTHON) -m venv $(OPT)/ninja
-	cd $(OPT)/ninja &&\
-		source bin/activate &&\
-		python3 -m pip install --upgrade pip &&\
-		python3 -m pip install ninja
+	$(PIP_INSTALL) ninja
 
 $(NODE):
 	curl -LsO https://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION)-darwin-x64.tar.gz
@@ -497,7 +535,7 @@ $(OPENSSL):
 		make &&\
 		make install
 
-$(PANGO): $(HARFBUZZ) $(CAIRO) $(GOBJECT_INTROSPECTION) $(MESON) $(NINJA)
+$(PANGO): $(HARFBUZZ) $(FRIBIDI) $(CAIRO) $(GOBJECT_INTROSPECTION) $(MESON) $(NINJA)
 	curl -LsO https://download.gnome.org/sources/pango/$(PANGO_VERSION_MAJOR_MINOR)/pango-$(PANGO_VERSION).tar.xz
 	tar xf pango-$(PANGO_VERSION).tar.xz
 	cd pango-$(PANGO_VERSION) &&\
@@ -516,8 +554,8 @@ $(P11_KIT): $(LIBTASN1) $(LIBFFI)
 	cd p11-kit-$(P11_KIT_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --without-trust-paths && make && make install
 
-$(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
-	curl -LsO https://www.php.net/distributions/php-$(PHP_VERSION).tar.gz
+$(PHP): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
+	curl -LO https://www.php.net/distributions/php-$(PHP_VERSION).tar.gz
 	tar xf php-$(PHP_VERSION).tar.gz
 	cd php-$(PHP_VERSION) &&\
 		$(CONFIGURE_WITH_PHP_PREFIX) \
@@ -529,11 +567,12 @@ $(PHP):  $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-pear \
 			--with-system-ciphers \
 			--with-pdo-mysql=mysqlnd \
+			--with-zip \
 			--with-zlib &&\
 		make &&\
 		make install
 
-$(PHP_8_1): $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
+$(PHP_8_1): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 	curl -LsO https://www.php.net/distributions/php-$(PHP_8_1_VERSION).tar.gz
 	tar xf php-$(PHP_8_1_VERSION).tar.gz
 	cd php-$(PHP_8_1_VERSION) &&\
@@ -547,6 +586,7 @@ $(PHP_8_1): $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 			--with-pear \
 			--with-system-ciphers \
 			--with-pdo-mysql=mysqlnd \
+			--with-zip \
 			--with-zlib &&\
 		make &&\
 		make install
@@ -570,11 +610,14 @@ $(PNGPASTE):
 		make &&\
 		mv pngpaste $(PNGPASTE)
 
+$(PYLSP): $(PYTHON)
+	$(PIP_INSTALL) 'python-lsp-server[all]'
+
 $(PYTHON): $(OPENSSL)
 	curl -LsO https://www.python.org/ftp/python/$(PYTHON_VERSION)/Python-$(PYTHON_VERSION).tar.xz
 	tar xf Python-$(PYTHON_VERSION).tar.xz
 	cd Python-$(PYTHON_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+		$(CONFIGURE) --prefix=$(PYTHON_PREFIX) && make && make install
 	$(PYTHON) -m pip install --upgrade pip
 
 $(REATTACH_TO_USER_NAMESPACE): $(TMUX)
@@ -710,6 +753,9 @@ clean:
 
 	rm -f libxml2-$(LIBXML_VERSION).tar.gz
 	rm -rf libxml2-$(LIBXML_VERSION)
+
+	rm -f libzip-$(LIBZIP_VERSION).tar.gz
+	rm -rf libzip-$(LIBZIP_VERSION)
 
 	rm -f node-v$(NODE_VERSION)-darwin-x64.tar.gz
 	rm -rf node-v$(NODE_VERSION)-darwin-x64
