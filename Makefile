@@ -105,7 +105,7 @@ DIFF_HIGHLIGHT := $(BIN)/diff-highlight
 EMACS := $(EMACS_BIN)/emacs
 FRIBIDI := $(LIB)/libfribidi.dylib
 FONTCONFIG := $(BIN)/fc-list
-FREETYPE := $(LIB)/libfreetype.dylib
+FREETYPE := $(PACKAGE_INFO)/freetype
 FREETYPE_WITH_HARFBUZZ := $(PACKAGE_INFO)/freetype_with_harfbuzz
 GDK_PIXBUF := $(LIB)/libgdk_pixbuf-2.0.dylib
 GIT := $(GIT_BIN)/git
@@ -117,7 +117,7 @@ GNUICONV := $(GNUICONV_BIN)/iconv
 GNUTLS := $(BIN)/gnutls-cli
 GOBJECT_INTROSPECTION := $(BIN)/g-ir-inspect
 GRAPHVIZ := $(BIN)/dot
-HARFBUZZ := $(BIN)/hb-view
+HARFBUZZ := $(PACKAGE_INFO)/harfbuzz
 ICONV := $(ICONV_BIN)/iconv
 IMAGEMAGICK := $(BIN)/convert
 JANSSON := $(LIB)/libjansson.a
@@ -322,8 +322,9 @@ $(FREETYPE): $(FONTCONFIG) $(NINJA) $(MESON)
 			$(MESON) --prefix=$(PREFIX) _build &&\
 		$(NINJA) -C _build &&\
 		$(NINJA) -C _build install
+	touch $(FREETYPE)
 
-$(FREETYPE_WITH_HARFBUZZ): $(FREETYPE) $(HARFBUZZ) $(PACKAGE_INFO)
+$(FREETYPE_WITH_HARFBUZZ): $(FREETYPE) $(HARFBUZZ)
 	curl -LO https://download.savannah.gnu.org/releases/freetype/freetype-$(FREETYPE_VERSION).tar.xz
 	tar xf freetype-$(FREETYPE_VERSION).tar.xz
 	cd freetype-$(FREETYPE_VERSION) &&\
@@ -439,6 +440,7 @@ $(HARFBUZZ): $(FREETYPE)
 	tar xf harfbuzz-$(HARFBUZZ_VERSION).tar.xz
 	cd harfbuzz-$(HARFBUZZ_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-coretext=yes && make && make install
+	touch $(HARFBUZZ)
 
 $(ICONV):
 	# Use Apple version to support UTF-8-MAC
