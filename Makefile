@@ -696,6 +696,8 @@ clean:
 	rm -f ag-$(AG_VERSION).tar.gz
 	rm -rf the_silver_searcher-$(AG_VERSION)
 
+	rm -f apache-maven-$(MAVEN_VERSION)-bin.tar.gz
+
 	rm -f autoconf-$(AUTOCONF_VERSION).tar.gz
 	rm -rf autoconf-$(AUTOCONF_VERSION)
 
@@ -720,11 +722,23 @@ clean:
 	rm -f emacs-$(EMACS_VERSION).tar.xz
 	rm -rf emacs-$(EMACS_VERSION)
 
+	rm -f fontconfig-$(FONTCONFIG_VERSION).tar.xz
+	rm -rf fontconfig-$(FONTCONFIG_VERSION)
+
+	rm -f freetype-$(FREETYPE_VERSION).tar.xz
+	rm -rf freetype-$(FREETYPE_VERSION)
+
 	rm -f git-$(GIT_VERSION).tar.gz
 	rm -rf git-$(GIT_VERSION)
 
+	rm -f glib-$(GLIB_VERSION).tar.xz
+	rm -rf glib-$(GLIB_VERSION)
+
 	rm -f global-$(GLOBAL_VERSION).tar.gz
 	rm -rf global-$(GLOBAL_VERSION)
+
+	rm -f gdk-pixbuf-$(GDK_PIXBUF_VERSION).tar.xz
+	rm -rf gdk-pixbuf-$(GDK_PIXBUF_VERSION)
 
 	rm -f gettext-$(GETTEXT_VERSION).tar.gz
 	rm -rf gettext-$(GETTEXT_VERSION)
@@ -744,6 +758,12 @@ clean:
 	rm -f ImageMagick-$(IMAGEMAGICK_VERSION).tar.gz
 	rm -rf ImageMagick-$(IMAGEMAGICK_VERSION)
 
+	rm -f jansson-$(JANSSON_VERSION).tar.gz
+	rm -rf jansson-$(JANSSON_VERSION)
+
+	rm -f libiconv-$(GNUICONV_VERSION).tar.gz
+	rm -rf libiconv-$(GNUICONV_VERSION)
+
 	rm -f libiconv-$(ICONV_VERSION).tar.gz
 	rm -rf libiconv-$(ICONV_VERSION)
 
@@ -755,6 +775,9 @@ clean:
 
 	rm -f nettle-$(LIBNETTLE_VERSION).tar.gz
 	rm -rf nettle-$(LIBNETTLE_VERSION)
+
+	rm -f librsvg-$(LIBRSVG_VERSION).tar.xz
+	rm -rf librsvg-$(LIBRSVG_VERSION)
 
 	rm -f libtasn1-$(LIBTASN1_VERSION).tar.gz
 	rm -rf libtasn1-$(LIBTASN1_VERSION)
@@ -797,6 +820,9 @@ clean:
 
 	rm -f php-$(PHP_8_1_VERSION).tar.gz
 	rm -rf php-$(PHP_8_1_VERSION)
+
+	rm -f pixman-$(PIXMAN_VERSION).tar.gz
+	rm -rf pixman-$(PIXMAN_VERSION)
 
 	rm -f pngpaste-$(PNGPASTE_VERSION).tar.gz
 	rm -rf pngpaste-$(PNGPASTE_VERSION)
