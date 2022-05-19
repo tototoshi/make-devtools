@@ -48,6 +48,7 @@ LIBTOOL_VERSION := 2.4.6
 LIBXML_VERSION := 2.9.10
 LIBZIP_VERSION := 1.8.0
 MAVEN_VERSION := 3.8.5
+NCURSES_VERSION := 6.3
 NODE_VERSION := 16.14.0
 ONIGURUMA_VERSION := 6.9.6
 OPENSSL_VERSION := 1.1.1k
@@ -61,6 +62,7 @@ PNGPASTE_VERSION := 0.2.3
 PKGCONFIG_VERSION := 0.29.2
 PYTHON_VERSION := 3.10.4
 REATTACH_TO_USER_NAMESPACE_VERSION := 2.9
+READLINE_VERSION := 8.1.2
 RUBY_VERSION := 3.1.2
 RUBY_VERSION_MAJOR_MINOR := 3.1
 SBT_VERSION := 1.6.2
@@ -133,6 +135,7 @@ LIBXML := $(LIB)/libxml2.a
 LIBZIP := $(LIB)/libzip.dylib
 MAVEN := $(MAVEN_PREFIX)/bin/mvn
 MESON := $(PYTHON_PREFIX)/bin/meson
+NCURSES := $(LIB)/libncurses.a
 NINJA := $(PYTHON_PREFIX)/bin/ninja
 NODE := $(NODE_BIN)/node
 ONIGURUMA := $(LIB)/libonig.a
@@ -146,6 +149,7 @@ PKGCONFIG := $(BIN)/pkg-config
 PNGPASTE := $(BIN)/pngpaste
 PYTHON := $(PYTHON_PREFIX)/bin/python3
 PIP := $(PYTHON_PREFIX)/bin/pip3
+READLINE := $(LIB)/libreadline.a
 REATTACH_TO_USER_NAMESPACE := $(BIN)/reattach-to-user-namespace
 RUBY := $(RUBY_PREFIX)/bin/ruby
 SBT := $(OPT)/sbt-$(SBT_VERSION)/bin/sbt
@@ -534,6 +538,12 @@ $(MAVEN):
 $(MESON): $(PYTHON)
 	$(PIP_INSTALL) meson
 
+$(NCURSES):
+	curl -LO https://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VERSION).tar.gz
+	tar xf ncurses-$(NCURSES_VERSION).tar.gz
+	cd ncurses-$(NCURSES_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --enable-pc-files && make && make install
+
 $(NINJA): $(PYTHON)
 	$(PIP_INSTALL) ninja
 
@@ -576,11 +586,12 @@ $(P11_KIT): $(LIBTASN1) $(LIBFFI)
 	cd p11-kit-$(P11_KIT_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --without-trust-paths && make && make install
 
-$(PHP): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
+$(PHP): $(READLINE) $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 	curl -LO https://www.php.net/distributions/php-$(PHP_VERSION).tar.gz
 	tar xf php-$(PHP_VERSION).tar.gz
 	cd php-$(PHP_VERSION) &&\
-		$(CONFIGURE_WITH_PHP_PREFIX) \
+		$(CONFIGURE) \
+			--prefix=$(PHP_PREFIX) \
 			--enable-mbstring \
 			--enable-pcntl \
 			--with-iconv=$(ICONV_PREFIX) \
@@ -589,12 +600,13 @@ $(PHP): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(S
 			--with-pear \
 			--with-system-ciphers \
 			--with-pdo-mysql=mysqlnd \
+			--with-readline=$(PREFIX) \
 			--with-zip \
 			--with-zlib &&\
 		make &&\
 		make install
 
-$(PHP_8_1): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
+$(PHP_8_1): $(READLINE) $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB) $(SQLITE)
 	curl -LsO https://www.php.net/distributions/php-$(PHP_8_1_VERSION).tar.gz
 	tar xf php-$(PHP_8_1_VERSION).tar.gz
 	cd php-$(PHP_8_1_VERSION) &&\
@@ -608,6 +620,7 @@ $(PHP_8_1): $(LIBZIP) $(OPENSSL) $(LIBXML) $(ICONV) $(CURL) $(ONIGURUMA) $(ZLIB)
 			--with-pear \
 			--with-system-ciphers \
 			--with-pdo-mysql=mysqlnd \
+			--with-readline=$(PREFIX) \
 			--with-zip \
 			--with-zlib &&\
 		make &&\
@@ -649,6 +662,12 @@ $(REATTACH_TO_USER_NAMESPACE): $(TMUX)
 	cd tmux-MacOSX-pasteboard-$(REATTACH_TO_USER_NAMESPACE_VERSION) && \
 		make &&\
 		mv -f reattach-to-user-namespace $(PREFIX)/bin
+
+$(READLINE): $(NCURSES)
+	curl -LO https://ftp.gnu.org/gnu/readline/readline-$(READLINE_VERSION).tar.gz
+	tar xf readline-$(READLINE_VERSION).tar.gz
+	cd readline-$(READLINE_VERSION) &&\
+		$(CONFIGURE_WITH_DEFAULT_PREFIX) --with-curses && make && make install
 
 $(RUBY): $(OPENSSL)
 	curl -LsO https://ftp.ruby-lang.org/pub/ruby/$(RUBY_VERSION_MAJOR_MINOR)/ruby-$(RUBY_VERSION).tar.xz
@@ -802,6 +821,9 @@ clean:
 	rm -f libzip-$(LIBZIP_VERSION).tar.gz
 	rm -rf libzip-$(LIBZIP_VERSION)
 
+	rm -f ncurses-$(NCURSES_VERSION).tar.gz
+	rm -rf ncurses-$(NCURSES_VERSION)
+
 	rm -f node-v$(NODE_VERSION)-darwin-x64.tar.gz
 	rm -rf node-v$(NODE_VERSION)-darwin-x64
 
@@ -831,6 +853,9 @@ clean:
 
 	rm -f Python-$(PYTHON_VERSION).tar.xz
 	rm -rf Python-$(PYTHON_VERSION)
+
+	rm -f readline-$(READLINE_VERSION).tar.gz
+	rm -rf readline-$(READLINE_VERSION)
 
 	rm -f ruby-$(RUBY_VERSION).tar.xz
 	rm -rf ruby-$(RUBY_VERSION)
