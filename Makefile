@@ -68,7 +68,8 @@ RUBY_VERSION_MAJOR_MINOR := 3.1
 SBT_VERSION := 1.6.2
 SQLITE_VERSION := 3.36.0
 TIG_VERSION := 2.5.3
-TMUX_VERSION := 3.2a
+TMUX_VERSION := 3.3
+UTF8PROC_VERSION := 2.7.0
 XZ_VERSION := 5.2.5
 ZLIB_VERSION := 1.2.12
 
@@ -90,6 +91,7 @@ MAVEN_PREFIX := $(OPT)/maven-$(MAVEN_VERSION)
 NINJA_BIN := $(OPT)/ninja/bin
 NODE_PREFIX := $(OPT)/node-$(NODE_VERSION)
 NODE_BIN := $(NODE_PREFIX)/bin
+TMUX_PREFIX := $(OPT)/tmux-$(TMUX_VERSION)
 
 AG := $(BIN)/ag
 ANSIBLE := $(PYTHON_PREFIX)/bin/ansible
@@ -155,7 +157,8 @@ RUBY := $(RUBY_PREFIX)/bin/ruby
 SBT := $(OPT)/sbt-$(SBT_VERSION)/bin/sbt
 SQLITE := $(BIN)/sqlite3
 TIG := $(BIN)/tig
-TMUX := $(BIN)/tmux
+TMUX := $(TMUX_PREFIX)/bin/tmux
+UTF8PROC := $(LIB)/libutf8proc.a
 XDEBUG := $(PHP_BIN)/xdebug
 XZ := $(BIN)/xz
 ZLIB := $(LIB)/libz.a
@@ -694,12 +697,18 @@ $(TIG):
 	cd tig-$(TIG_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
 
-$(TMUX): $(LIBEVENT)
+$(TMUX): $(LIBEVENT) $(NCURSES) $(UTF8PROC)
 	curl -Ls -o tmux-$(TMUX_VERSION).tar.gz \
 		https://github.com/tmux/tmux/releases/download/$(TMUX_VERSION)/tmux-$(TMUX_VERSION).tar.gz
 	tar xf tmux-$(TMUX_VERSION).tar.gz
 	cd tmux-$(TMUX_VERSION) &&\
-		$(CONFIGURE_WITH_DEFAULT_PREFIX) && make && make install
+		$(CONFIGURE) --prefix=$(TMUX_PREFIX) --with-TERM=screen-256color --enable-utf8proc &&\
+		make && make install
+
+$(UTF8PROC):
+	curl -L -o utf8proc-$(UTF8PROC_VERSION).tar.gz https://github.com/JuliaStrings/utf8proc/archive/refs/tags/v$(UTF8PROC_VERSION).tar.gz
+	tar xf utf8proc-$(UTF8PROC_VERSION).tar.gz
+	cd utf8proc-$(UTF8PROC_VERSION) && make prefix=$(PREFIX) install
 
 $(XZ):
 	curl -LsO https://tukaani.org/xz/xz-$(XZ_VERSION).tar.gz
@@ -876,6 +885,9 @@ clean:
 
 	rm -f xz-$(XZ_VERSION).tar.gz
 	rm -rf xz-$(XZ_VERSION)
+
+	rm -f utf8proc-$(UTF8PROC_VERSION).tar.gz
+	rm -rf utf8proc-$(UTF8PROC_VERSION)
 
 	rm -f zlib-$(ZLIB_VERSION).tar.xz
 	rm -rf zlib-$(ZLIB_VERSION)
