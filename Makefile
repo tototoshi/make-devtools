@@ -523,7 +523,7 @@ $(LIBXML):
 	cd libxml2-$(LIBXML_VERSION) &&\
 		$(CONFIGURE_WITH_DEFAULT_PREFIX) --without-python && make && make install
 
-$(LIBZIP):
+$(LIBZIP): $(CMAKE)
 	curl -LO https://libzip.org/download/libzip-$(LIBZIP_VERSION).tar.gz
 	tar xf libzip-$(LIBZIP_VERSION).tar.gz
 	cd libzip-$(LIBZIP_VERSION) &&\
